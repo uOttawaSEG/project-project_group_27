@@ -99,6 +99,9 @@ public class InputValidator {
     //Returns 0 if email is null
     //Returns 1 if email is valid
     //Returns -1 if email is missing @ or .
+    //Returns -2 if email has no username (first part)
+    //Returns -3 if email has no mail server
+    //Returns -4 if email has no domain
     public static int validateEmailAddress(String emailAddress) {
 
         if (emailAddress == null) {
@@ -111,17 +114,49 @@ public class InputValidator {
         boolean hasPeriod = false;
         for (char c : emailAddressArray) {
             if (c == ATSIGN) {
+                if (hasAtSign) {
+                    return -5;
+                }
                 hasAtSign = true;
             }
-            if (c == PERIOD) {
+            if (hasAtSign && c == PERIOD) {
                 hasPeriod = true;
             }
         }
 
-        if (hasPeriod && hasAtSign) {
-            return 1;
+        if (!hasPeriod) {
+            return -1;
         }
 
-        return -1;
+        String[] usernameSplitFromEmail = emailAddress.split("@");
+        if (usernameSplitFromEmail[0].isEmpty()) {
+            return -2;
+        }
+
+        String[] mailServerAndDomain = usernameSplitFromEmail[1].split("\\.",2);
+
+        if (mailServerAndDomain[0].isEmpty()) {
+            return -3;
+        } else if (mailServerAndDomain[1].isEmpty()) {
+            return -4;
+        }
+
+        return 1;
+    }
+
+    //Returns 0 if input is null
+    //Returns 1 if input exists
+    //Returns -1 if input is empty
+    public static int validateExistence(String input) {
+
+        if (input == null) {
+            return 0;
+        }
+
+        if (input.isEmpty()) {
+            return -1;
+        }
+
+        return 1;
     }
 }

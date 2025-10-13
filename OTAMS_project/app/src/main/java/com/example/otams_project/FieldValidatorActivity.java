@@ -74,10 +74,38 @@ public class FieldValidatorActivity extends AppCompatActivity {
             case 1:
                 return false;
             case -1:
-                Toast.makeText(this, "Email address is missing an @ or a .", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Email address is missing an @ or a . after an @", Toast.LENGTH_LONG).show();
+                return true;
+            case -2:
+                Toast.makeText(this, "Email is missing a username", Toast.LENGTH_LONG).show();
+                return true;
+            case -3:
+                Toast.makeText(this, "Email is missing a mail server", Toast.LENGTH_LONG).show();
+                return true;
+            case -4:
+                Toast.makeText(this, "Email is missing a domain", Toast.LENGTH_LONG).show();
+                return true;
+            case -5:
+                Toast.makeText(this, "Has more @ signs than expected", Toast.LENGTH_LONG).show();
                 return true;
             default:
-                Toast.makeText(this, "Phone number produces unknown error", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Email produces unknown error", Toast.LENGTH_LONG).show();
+                return true;
+        }
+    }
+
+    protected boolean isInputInvalid(String field, String value) {
+        switch (InputValidator.validateExistence(value)) {
+            case 0:
+                Toast.makeText(this, field + " cannot be null", Toast.LENGTH_LONG).show();
+                return true;
+            case 1:
+                return false;
+            case -1:
+                Toast.makeText(this, field + " cannot be empty", Toast.LENGTH_LONG).show();
+                return true;
+            default:
+                Toast.makeText(this, field + " produces unknown error", Toast.LENGTH_LONG).show();
                 return true;
         }
     }

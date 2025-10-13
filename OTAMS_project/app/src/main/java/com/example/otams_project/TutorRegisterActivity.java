@@ -52,6 +52,10 @@ public class TutorRegisterActivity extends FieldValidatorActivity implements Reg
             return;
         if (this.isEmailAddressInvalid(email))
             return;
+        if(this.isInputInvalid("Highest degree", degree))
+            return;
+        if(this.isInputInvalid("Courses", courses))
+            return;
 
         Account account = Tutor.register(firstName, lastName, email, password, phone , degree , courses);
         FirebaseAccessor accessor = new FirebaseAccessor();
