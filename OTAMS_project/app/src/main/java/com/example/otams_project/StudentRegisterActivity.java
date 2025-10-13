@@ -2,7 +2,6 @@ package com.example.otams_project;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.content.Intent;
@@ -10,7 +9,7 @@ import android.widget.Toast;
 
 
 
-public class StudentRegisterActivity extends AppCompatActivity implements Register {
+public class StudentRegisterActivity extends FieldValidatorActivity implements Register {
     private EditText firstNameInput;
     private EditText lastNameInput;
     private EditText emailInput;
@@ -33,12 +32,21 @@ public class StudentRegisterActivity extends AppCompatActivity implements Regist
     }
 
     public void onRegisterButtonClick(View view){
-        String firstName = firstNameInput.getText().toString();
-        String lastName = lastNameInput.getText().toString();
-        String email = emailInput.getText().toString();
+        String firstName = firstNameInput.getText().toString().strip();
+        String lastName = lastNameInput.getText().toString().strip();
+        String email = emailInput.getText().toString().strip();
         String password = passwordInput.getText().toString();
         String phone = phoneInput.getText().toString();
-        String program = programInput.getText().toString();
+        String program = programInput.getText().toString().strip();
+
+        if (this.isNameInvalid("First name", firstName))
+            return;
+        if (this.isNameInvalid("Last name", lastName))
+            return;
+        if (this.isPasswordInvalid(password))
+            return;
+        if (this.isPhoneNumberInvalid(phone))
+            return;
 
         Account account = Student.register(firstName, lastName, email, password, phone , program);
         FirebaseAccessor accessor = new FirebaseAccessor();
@@ -54,6 +62,7 @@ public class StudentRegisterActivity extends AppCompatActivity implements Regist
         Toast.makeText(this, "Successfully created student account", Toast.LENGTH_LONG).show();
         startActivity( new Intent(StudentRegisterActivity.this , MainActivity.class));
     }
+
 }
 
 

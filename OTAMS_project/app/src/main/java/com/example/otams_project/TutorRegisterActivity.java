@@ -2,14 +2,13 @@ package com.example.otams_project;
 
 import android.os.Bundle;
 
-import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.content.Intent;
 import android.widget.Toast;
 
 
-public class TutorRegisterActivity extends AppCompatActivity implements Register{
+public class TutorRegisterActivity extends FieldValidatorActivity implements Register{
     private EditText firstNameInput;
     private EditText lastNameInput;
     private EditText emailInput;
@@ -35,13 +34,23 @@ public class TutorRegisterActivity extends AppCompatActivity implements Register
     }
 
     public void onRegisterButtonClick(View view){
-        String firstName = firstNameInput.getText().toString();
-        String lastName = lastNameInput.getText().toString();
+        String firstName = firstNameInput.getText().toString().strip();
+        String lastName = lastNameInput.getText().toString().strip();
         String email = emailInput.getText().toString();
         String password = passwordInput.getText().toString();
         String phone = phoneInput.getText().toString();
         String degree = degreeInput.getText().toString();
         String courses = coursesInput.getText().toString();
+
+        if (this.isNameInvalid("First name", firstName))
+            return;
+        if (this.isNameInvalid("Last name", lastName))
+            return;
+        if (this.isPasswordInvalid(password))
+            return;
+        if (this.isPhoneNumberInvalid(phone))
+            return;
+
         Account account = Tutor.register(firstName, lastName, email, password, phone , degree , courses);
         FirebaseAccessor accessor = new FirebaseAccessor();
         accessor.writeNewAccount(this, account);
