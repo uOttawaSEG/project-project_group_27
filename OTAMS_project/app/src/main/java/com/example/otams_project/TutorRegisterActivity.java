@@ -2,18 +2,14 @@ package com.example.otams_project;
 
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 import android.view.View;
 import android.widget.EditText;
 import android.content.Intent;
+import android.widget.Toast;
 
 
-
-public class TutorRegisterActivity extends AppCompatActivity {
+public class TutorRegisterActivity extends AppCompatActivity implements Register{
     private EditText firstNameInput;
     private EditText lastNameInput;
     private EditText emailInput;
@@ -47,13 +43,23 @@ public class TutorRegisterActivity extends AppCompatActivity {
         String degree = degreeInput.getText().toString();
         String courses = coursesInput.getText().toString();
         String[] coursesArray = courses.split(",");
-        Tutor.register(firstName, lastName, email, password, phone , degree , coursesArray);
-        startActivity( new Intent(TutorRegisterActivity.this , MainActivity.class));
+        User tutor = Tutor.register(firstName, lastName, email, password, phone , degree , coursesArray);
+        FirebaseAccessor accessor = new FirebaseAccessor();
+        accessor.writeNewAccount(this, tutor.getAccount());
 
 
 
 
     }
+
+    public void writeAccountFail() {
+        Toast.makeText(this, "Email already in use", Toast.LENGTH_LONG).show();
+    }
+    public void writeAccountSuccess() {
+        Toast.makeText(this, "Successfully created tutor account", Toast.LENGTH_LONG).show();
+        startActivity( new Intent(TutorRegisterActivity.this , MainActivity.class));
+    }
+
 }
 
 

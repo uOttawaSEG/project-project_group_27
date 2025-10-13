@@ -17,13 +17,13 @@ public class Tutor extends User {
 
 
 
-    public static void register(String firstName, String lastName, String email , String password, String phone , String degree, String[] courses) {
-        Account account = new Account(email, password, "tutor");
+    public static User register(String firstName, String lastName, String email , String password, String phone , String degree, String[] courses) {
         Tutor tutor = new Tutor(firstName, lastName, phone);
+        Account account = new Account(email, password, "tutor");
         tutor.degree = degree;
         tutor.courses = courses;
         tutor.account = account;
-        FirebaseAccessor accessor = new FirebaseAccessor();
-        accessor.writeNewAccount(null, account);
+
+        return tutor;
     }
 }

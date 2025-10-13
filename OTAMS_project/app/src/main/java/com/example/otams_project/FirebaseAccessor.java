@@ -18,7 +18,7 @@ public class FirebaseAccessor {
     }
 
     @SuppressWarnings("unused")
-    public void writeNewAccount(MainActivity caller, Account account) {
+    public void writeNewAccount(Register caller, Account account) {
 
         Query query = database.child("account").orderByChild("email").equalTo(account.getEmail());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -40,7 +40,7 @@ public class FirebaseAccessor {
 
     }
 
-    public void doesEmailMatchPassword(LoginActivity caller, String email, String password) {
+    public void doesEmailMatchPassword(Login caller, String email, String password) {
         Query query = database.child("account").orderByChild("email").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

@@ -37,12 +37,14 @@ public class User {
     public Account getAccount(){
         return account;
     }
-    public static void register(String firstName, String lastName, String email , String password, String phone){
-        Account account = new Account(email, password, "null");
+    public static User register(String firstName, String lastName, String email , String password, String phone){
         User user = new User(firstName, lastName, phone);
+        Account account = new Account(email, password, "null");
         user.account = account;
         FirebaseAccessor accessor = new FirebaseAccessor();
         accessor.writeNewAccount(null, account);
+
+        return user;
     }
 
     }

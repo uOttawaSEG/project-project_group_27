@@ -15,12 +15,12 @@ public class Student extends User {
 
 
 
-    public static void register(String firstName, String lastName, String email , String password, String phone , String program) {
-        Account account = new Account(email, password, "student");
+    public static User register(String firstName, String lastName, String email , String password, String phone , String program) {
         Student student = new Student(firstName, lastName, phone);
+        Account account = new Account(email, password, "student");
         student.program = program;
         student.account = account;
-        FirebaseAccessor accessor = new FirebaseAccessor();
-        accessor.writeNewAccount(null, account);
+
+        return student;
     }
 }
