@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "648652549319",
+    "project_id": "otams-project",
+    "storage_bucket": "otams-project.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:648652549319:android:4b88f193be4edcd3a4a2e2",
+        "android_client_info": {
+          "package_name": "com.example.otams_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCh0qIanyiFQgNVYdAcpUzey0-mSeOhVvk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
