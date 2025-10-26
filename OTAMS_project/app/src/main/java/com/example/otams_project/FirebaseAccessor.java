@@ -9,6 +9,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.LinkedList;
+
 public class FirebaseAccessor {
 
     private final DatabaseReference database;
@@ -17,7 +19,6 @@ public class FirebaseAccessor {
         database = FirebaseDatabase.getInstance().getReference();
     }
 
-    @SuppressWarnings("unused")
     public void writeNewAccount(Register caller, Account account) {
 
         Query query = database.child("account").orderByChild("email").equalTo(account.getEmail());
@@ -38,6 +39,11 @@ public class FirebaseAccessor {
             }
         });
 
+    }
+
+    public void writeNewRegistrationRequest(RegistrationRequest request) {
+        DatabaseReference newKey = database.child("request").push();
+        newKey.setValue(request);
     }
 
     public void doesEmailMatchPassword(Login caller, String email, String password) {
@@ -70,6 +76,34 @@ public class FirebaseAccessor {
         });
 
     }
+
+    public void readAllPendingRequests(ListRequest caller, String status) {
+        Query query = database.child("request").orderByChild("status").equalTo(status);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                LinkedList<RegistrationRequest> listOfRequests = new LinkedList<RegistrationRequest>();
+
+                if (snapshot.exists()) {
+                    for (DataSnapshot child : snapshot.getChildren()) {
+
+                        listOfRequests.addLast((RegistrationRequest) child.getValue());
+
+                    }
+                }
+                caller.retrieveList(listOfRequests);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                System.out.println("Failed read " + status + " requests");
+            }
+        });
+    }
+
+
 
 
     private void createAccountEntry(Account account) {
