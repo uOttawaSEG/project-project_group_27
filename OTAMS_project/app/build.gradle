@@ -28,6 +28,11 @@ android {
         sourceCompatibility JavaVersion.VERSION_11
         targetCompatibility JavaVersion.VERSION_11
     }
+
+    packagingOptions {
+        exclude "META-INF/NOTICE.md"
+        exclude "META-INF/LICENSE.md"
+    }
 }
 
 dependencies {
@@ -42,4 +47,8 @@ dependencies {
 
     implementation platform('com.google.firebase:firebase-bom:34.3.0')
     implementation("com.google.firebase:firebase-database")
+
+    implementation libs.android.mail
+    implementation libs.android.activation
+
 }

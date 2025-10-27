@@ -38,4 +38,5 @@ public class LoggedInActivity extends AppCompatActivity {
         startActivity( new Intent(LoggedInActivity.this , MainActivity.class));
         finish();
     }
+
 }
