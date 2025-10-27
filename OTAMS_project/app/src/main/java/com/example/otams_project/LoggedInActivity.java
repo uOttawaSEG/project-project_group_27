@@ -41,7 +41,8 @@ public class LoggedInActivity extends AppCompatActivity {
     }
     public void onAdminButtonClick(View view){
         Account account = (Account) getIntent().getSerializableExtra("ACCOUNT");
-        if(account.getEmail() == "admin.root@gmail.com"){
+        assert account != null;
+        if(account.getEmail().compareTo("admin.root@gmail.com") == 0){
             startActivity(new Intent(LoggedInActivity.this, AdminActivity.class));
         }
 
