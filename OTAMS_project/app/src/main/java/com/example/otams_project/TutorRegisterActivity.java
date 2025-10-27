@@ -18,6 +18,11 @@ public class TutorRegisterActivity extends FieldValidatorActivity implements Reg
 
     private EditText coursesInput;
 
+    private boolean submitted = false;  // prevent multiple clicks
+
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +39,10 @@ public class TutorRegisterActivity extends FieldValidatorActivity implements Reg
     }
 
     public void onRegisterButtonClick(View view){
+
+        if (submitted) // prevent multiple clicks
+            return;
+
         String firstName = firstNameInput.getText().toString().strip();
         String lastName = lastNameInput.getText().toString().strip();
         String email = emailInput.getText().toString().strip();
@@ -57,6 +66,9 @@ public class TutorRegisterActivity extends FieldValidatorActivity implements Reg
         if(this.isInputInvalid("Courses", courses))
             return;
 
+        submitted = true;
+
+
         Account account = Tutor.register(firstName, lastName, email, password, phone , degree , courses);
         FirebaseAccessor accessor = new FirebaseAccessor();
         accessor.writeNewAccount(this, account);
@@ -67,9 +79,11 @@ public class TutorRegisterActivity extends FieldValidatorActivity implements Reg
     }
 
     public void writeAccountFail() {
+        submitted = false; // reset
         Toast.makeText(this, "Email already in use", Toast.LENGTH_LONG).show();
     }
     public void writeAccountSuccess() {
+        submitted = false;  //reset
         Toast.makeText(this, "Registration submitted for approval", Toast.LENGTH_LONG).show();
         startActivity( new Intent(TutorRegisterActivity.this , PendingApprovalActivity.class));
         finish();

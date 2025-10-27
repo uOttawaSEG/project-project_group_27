@@ -12,6 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.OTAMS_project">
         <activity
+            android:name=".AdminActivity"
+            android:exported="false" />
+        <activity
             android:name=".PendingApprovalActivity"
             android:exported="false" />
         <activity

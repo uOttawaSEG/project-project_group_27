@@ -6,6 +6,7 @@ public class Account implements Serializable {
     private String email;
     private String password;
     private String role;
+    private String status;
     private User user;
 
     public Account(String accountEmail, String accountPassword, String accountRole, User accountUser) {
@@ -13,6 +14,7 @@ public class Account implements Serializable {
         this.password = accountPassword;
         this.role = accountRole;
         this.user = accountUser;
+        this.status = "pending";
     }
 
     public Account() {
@@ -33,6 +35,15 @@ public class Account implements Serializable {
     public User getUser() {
         return  user;
     }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
 
     public void login() {
 

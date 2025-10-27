@@ -9,6 +9,11 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.List;
+import java.util.ArrayList;
+
+
+
 public class FirebaseAccessor {
 
     private final DatabaseReference database;
@@ -77,7 +82,83 @@ public class FirebaseAccessor {
         newKey.setValue(account);
     }
 
+    public void getPendingAccounts(AdminCallback callback) {
+        Query query = database.child("account").orderByChild("status").equalTo("pending");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Account> accounts = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Account account = child.getValue(Account.class);
+                    if (account != null) {
+                        accounts.add(account);
+                    }
+                }
+                callback.onAccountsFetched(accounts);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError("Failed to fetch accounts");
+            }
+        });
+    }
 
+    public void getRejectedAccounts(AdminCallback callback) {
+        Query query = database.child("account").orderByChild("status").equalTo("rejected");
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Account> accounts = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Account account = child.getValue(Account.class);
+                    if (account != null) {
+                        accounts.add(account);
+                    }
+                }
+                callback.onAccountsFetched(accounts);
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError("Failed to fetch accounts");
+            }
+        });
+    }
+
+    public void approveAccount(String email, ApprovalCallback callback) {
+        Query query = database.child("account").orderByChild("email").equalTo(email);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    child.getRef().child("status").setValue("approved");
+                }
+                callback.onApprovalSuccess();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onApprovalFailure(error.getMessage());
+            }
+        });
+    }
+
+    public void rejectAccount(String email, ApprovalCallback callback) {
+        Query query = database.child("account").orderByChild("email").equalTo(email);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    child.getRef().child("status").setValue("rejected");
+                }
+                callback.onApprovalSuccess();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onApprovalFailure(error.getMessage());
+            }
+        });
+    }
 }

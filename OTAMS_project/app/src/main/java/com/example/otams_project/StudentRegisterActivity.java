@@ -17,6 +17,9 @@ public class StudentRegisterActivity extends FieldValidatorActivity implements R
     private EditText phoneInput;
     private EditText programInput;
 
+    private boolean submitted = false;  // prevent multiple clicks
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,10 @@ public class StudentRegisterActivity extends FieldValidatorActivity implements R
     }
 
     public void onRegisterButtonClick(View view){
+
+        if(submitted) {
+            return;
+        }
         String firstName = firstNameInput.getText().toString().strip();
         String lastName = lastNameInput.getText().toString().strip();
         String email = emailInput.getText().toString().strip();
@@ -52,6 +59,8 @@ public class StudentRegisterActivity extends FieldValidatorActivity implements R
         if (this.isInputInvalid("Program", program))
             return;
 
+        submitted = true;
+
         Account account = Student.register(firstName, lastName, email, password, phone , program);
         FirebaseAccessor accessor = new FirebaseAccessor();
         accessor.writeNewAccount(this, account);
@@ -60,9 +69,11 @@ public class StudentRegisterActivity extends FieldValidatorActivity implements R
     }
 
     public void writeAccountFail() {
+        submitted = false; //reset
         Toast.makeText(this, "Email already in use", Toast.LENGTH_LONG).show();
     }
     public void writeAccountSuccess() {
+        submitted = false; //reset
         Toast.makeText(this, "Registration submitted for approval", Toast.LENGTH_LONG).show();
         startActivity( new Intent(StudentRegisterActivity.this , PendingApprovalActivity.class));
         finish();
