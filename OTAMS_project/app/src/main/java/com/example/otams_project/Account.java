@@ -50,10 +50,10 @@ public class Account implements Serializable {
 
 
     public void login() {
-
+        LocalDataStorage.setAccount(this);
     }
 
     public void logout() {
-
+        LocalDataStorage.setAccount(new Account());
     }
 }

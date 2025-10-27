@@ -37,9 +37,9 @@ public class Emailer {
             Properties properties = System.getProperties();
 
             properties.put("mail.smtp.host", emailHost);
-            properties.put("mail.starttls.port", port);
+            properties.put("mail.smtp.port", port);
             //587 port requires mail.smtp.starttls.enable instead of 465
-            properties.put("mail.smtp.ssl.enable", true);
+            properties.put("mail.smtp.starttls.enable", true);
             properties.put("mail.smtp.auth", true);
 
             javax.mail.Session session = Session.getInstance(properties, new Authenticator() {

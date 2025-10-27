@@ -12,13 +12,13 @@ import android.widget.Toast;
 
 public class LoggedInActivity extends AppCompatActivity {
 
-    Class<?> logoutButtonDestination = MainActivity.class;
+    Account account;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
-        Account account = (Account) getIntent().getSerializableExtra("ACCOUNT");
+        account = LocalDataStorage.getAccount();
 
         String roleToDisplay = "User";
         String welcomeMessage = "Account should not be null";
@@ -35,28 +35,36 @@ public class LoggedInActivity extends AppCompatActivity {
                 roleToDisplay = account.getRole();
             }
 
+            if (account.getStatus() == null) {
 
-            switch (account.getStatus()) {
-                case "approved":
-                    welcomeMessage = "Welcome! Successfully Logged in as " + roleToDisplay;
-                    toastMessage = account.getEmail()+ " has signed in, they are a(n) " + account.getRole();
-                    break;
-                case "pending":
-                    welcomeMessage = "Your registration for the " + roleToDisplay + " role is pending approval";
-                    logoutButtonMessage = "Back to login";
-                    logoutButtonDestination = LoginActivity.class;
-                    toastMessage = "Hang in there " + account.getUser().getFirstName() + "!";
-                    break;
-                case "rejected":
-                    welcomeMessage = "Your registration for the " + roleToDisplay + " role has been rejected, please contact 123-456-7890 for help";
-                    logoutButtonMessage = "Return";
-                    toastMessage = account.getEmail()+ " has attempted to sign in, they are a(n) " + account.getRole();
-                    break;
-                default:
-                    welcomeMessage = "Registration status is an unexpected value";
-                    break;
+
+                welcomeMessage = "You have a legacy " + roleToDisplay + " account, contact 123-456-7890 for help";
+                toastMessage = "Our apologies " + account.getUser().getFirstName();
+
+
+            } else {
+
+
+                switch (account.getStatus()) {
+                    case "approved":
+                        welcomeMessage = "Welcome! Successfully Logged in as " + roleToDisplay;
+                        toastMessage = account.getEmail() + " has signed in, they are a(n) " + account.getRole();
+                        break;
+                    case "pending":
+                        welcomeMessage = "Your registration for the " + roleToDisplay + " role is pending approval";
+                        toastMessage = "Hang in there " + account.getUser().getFirstName() + "!";
+                        break;
+                    case "rejected":
+                        welcomeMessage = "Your registration for the " + roleToDisplay + " role has been rejected, please contact 123-456-7890 for help";
+                        toastMessage = account.getEmail() + " has attempted to sign in, they are a(n) " + account.getRole();
+                        break;
+                    default:
+                        welcomeMessage = "Registration status is an unexpected value";
+                        break;
+                }
+
+
             }
-
 
         }
 
@@ -71,19 +79,15 @@ public class LoggedInActivity extends AppCompatActivity {
 
     }
     public void onLogoutButtonClick(View view){
-        Account account = (Account) getIntent().getSerializableExtra("ACCOUNT");
-        if (account != null) {
-            account.logout();
+        if (LocalDataStorage.isLoginStatus()) {
+            Toast.makeText(this, "You have been logged out of the " + LocalDataStorage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
+            LocalDataStorage.getAccount().logout();
         }
-        startActivity( new Intent(LoggedInActivity.this , logoutButtonDestination));
         finish();
     }
     public void onAdminButtonClick(View view){
-        Account account = (Account) getIntent().getSerializableExtra("ACCOUNT");
-        assert account != null;
         if(account.getRole().equals("admin")){
             startActivity(new Intent(LoggedInActivity.this, AdminActivity.class));
         }
-
     }
 }

@@ -1,14 +1,9 @@
 package com.example.otams_project;
 
-import android.content.Intent;
 import android.os.Bundle;
 
-import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -16,7 +11,6 @@ import java.util.List;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.example.otams_project.R;
 
 public class AdminActivity extends AppCompatActivity implements AdminCallback  {
 
@@ -48,8 +42,7 @@ public class AdminActivity extends AppCompatActivity implements AdminCallback  {
         accessor.getRejectedAccounts(this);
     }
 
-    public void onLogoutClick(View view) {
-        startActivity(new Intent(AdminActivity.this, MainActivity.class));
+    public void onBackClick(View view) {
         finish();
     }
 

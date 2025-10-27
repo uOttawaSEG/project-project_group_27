@@ -16,7 +16,11 @@ public class MainActivity extends AppCompatActivity {
         LocalNotifier.initializeNotificationChannels(this);
     }
     public void onLoginClick(View view){
-        startActivity( new Intent(MainActivity.this , LoginActivity.class));
+        if (LocalDataStorage.isLoginStatus()) {
+            startActivity( new Intent(MainActivity.this , LoggedInActivity.class));
+        } else {
+            startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }
     }
     public void onRegisterClick(View view){
         startActivity( new Intent(MainActivity.this , RegisterActivity.class));

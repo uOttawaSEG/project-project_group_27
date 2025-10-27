@@ -38,7 +38,6 @@ public class LoginActivity extends AppCompatActivity implements Login {
     public void approveSignIn(Account account) {
         account.login();
         Intent intent=new Intent(LoginActivity.this,LoggedInActivity.class);
-        intent.putExtra("ACCOUNT", account);
         startActivity(intent);
         finish();
     }
