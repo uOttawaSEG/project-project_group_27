@@ -43,6 +43,10 @@ public class Account implements Serializable {
     public void setStatus(String status) {
         this.status = status;
     }
+    public String toString() {
+        return "Email: " + email + "Role: " + role + "Status: " + status;
+    }
+
 
 
     public void login() {

@@ -23,6 +23,7 @@ public class LoggedInActivity extends AppCompatActivity {
         } else {
             roleToDisplay = account.getRole();
         }
+
         TextView welcomeText=findViewById(R.id.textView3);
         welcomeText.setText("Welcome! Successfully Logged in as " + roleToDisplay);
 
@@ -37,5 +38,12 @@ public class LoggedInActivity extends AppCompatActivity {
         }
         startActivity( new Intent(LoggedInActivity.this , MainActivity.class));
         finish();
+    }
+    public void onAdminButtonClick(View view){
+        Account account = (Account) getIntent().getSerializableExtra("ACCOUNT");
+        if(account.getEmail() == "admin.root@gmail.com"){
+            startActivity(new Intent(LoggedInActivity.this, AdminActivity.class));
+        }
+
     }
 }
