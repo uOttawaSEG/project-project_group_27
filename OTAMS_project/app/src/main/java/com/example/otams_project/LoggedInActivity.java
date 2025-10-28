@@ -93,9 +93,6 @@ public class LoggedInActivity extends AppCompatActivity {
     public void onAdminButtonClick(View view){
         if(account.getRole().equals("admin")){
             startActivity(new Intent(LoggedInActivity.this, AdminActivity.class));
-            Account temp = new Account("email", "pass", "user", new User("first", "last", "phone"));
-            temp.setStatus("rejected");
-            LocalNotifier.sendRequestStatusNotification(this, temp, false);
         }
     }
 
