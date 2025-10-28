@@ -21,6 +21,12 @@ public class Tutor extends User {
         return courses;
     }
 
+    @Override
+    public String toFancyString() {
+        return "Degree: " + degree + "\n" +
+                "Courses: " + courses;
+    }
+
 
 
     public static Account register(String firstName, String lastName, String email , String password, String phone , String degree, String courses) {

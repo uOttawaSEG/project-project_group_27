@@ -32,6 +32,10 @@ public class User implements Serializable{
         return phone;
     }
 
+    public String toFancyString() {
+        return "";
+    }
+
 
     public static Account register(String firstName, String lastName, String email , String password, String phone){
         User user = new User(firstName, lastName, phone);

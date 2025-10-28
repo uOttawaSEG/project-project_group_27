@@ -13,7 +13,6 @@ import java.util.List;
 import java.util.ArrayList;
 
 
-
 public class FirebaseAccessor {
 
     private final DatabaseReference database;
@@ -56,6 +55,22 @@ public class FirebaseAccessor {
                         if (foundAccount != null)
                             if (foundAccount.getPassword() != null) {
                                 if (password.equals(foundAccount.getPassword())) {
+
+                                    switch (foundAccount.getRole()) {
+                                        case "student":
+                                            foundAccount.setUser(child.child("user").getValue(Student.class));
+                                            break;
+                                        case "tutor":
+                                            foundAccount.setUser(child.child("user").getValue(Tutor.class));
+                                            break;
+                                        case "admin":
+                                            foundAccount.setUser(child.child("user").getValue(Admin.class));
+                                            break;
+                                        default:
+                                            foundAccount.setUser(child.child("user").getValue(User.class));
+                                            break;
+                                    }
+
                                     caller.approveSignIn(foundAccount);
                                 } else {
                                     caller.denySignIn();
@@ -91,6 +106,22 @@ public class FirebaseAccessor {
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Account account = child.getValue(Account.class);
                     if (account != null) {
+
+                        switch (account.getRole()) {
+                            case "student":
+                                account.setUser(child.child("user").getValue(Student.class));
+                                break;
+                            case "tutor":
+                                account.setUser(child.child("user").getValue(Tutor.class));
+                                break;
+                            case "admin":
+                                account.setUser(child.child("user").getValue(Admin.class));
+                                break;
+                            default:
+                                account.setUser(child.child("user").getValue(User.class));
+                                break;
+                        }
+
                         accounts.add(account);
                     }
                 }
@@ -113,6 +144,22 @@ public class FirebaseAccessor {
                 for (DataSnapshot child : snapshot.getChildren()) {
                     Account account = child.getValue(Account.class);
                     if (account != null) {
+
+                        switch (account.getRole()) {
+                            case "student":
+                                account.setUser(child.child("user").getValue(Student.class));
+                                break;
+                            case "tutor":
+                                account.setUser(child.child("user").getValue(Tutor.class));
+                                break;
+                            case "admin":
+                                account.setUser(child.child("user").getValue(Admin.class));
+                                break;
+                            default:
+                                account.setUser(child.child("user").getValue(User.class));
+                                break;
+                        }
+
                         accounts.add(account);
                     }
                 }

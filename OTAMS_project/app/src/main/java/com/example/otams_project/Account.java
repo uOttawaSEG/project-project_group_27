@@ -35,6 +35,9 @@ public class Account implements Serializable {
     public User getUser() {
         return  user;
     }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public String getStatus() {
         return status;
@@ -45,6 +48,14 @@ public class Account implements Serializable {
     }
     public String toString() {
         return " Email: " + email + " Role: " + role + " Status: " + status;
+    }
+
+    public String toFancyString() {
+        return "Name: " + user.getFirstName() + " " + user.getLastName() + "\n" +
+                "Email: " + email + "\n" +
+                "Phone: " + user.getPhone() + "\n" +
+                "Role: " + role + "\n" +
+                user.toFancyString();
     }
 
 

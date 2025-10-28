@@ -75,14 +75,21 @@ public class AdminActivity extends AppCompatActivity implements AdminCallback  {
     }
 
     private void showApproveRejectDialog(Account account) {
+
         new AlertDialog.Builder(this)
                 .setTitle("status : " + account.getStatus())
-                .setMessage("Do you want to approve or reject this account? email :" + account.getEmail() + " role: " + account.getRole() )
+                .setMessage(account.toFancyString())
                 .setPositiveButton("Approve", (dialog, which) -> {
                     accessor.approveAccount(account.getEmail(), new ApprovalCallback() {
                         @Override
                         public void onApprovalSuccess() {
                             Toast.makeText(AdminActivity.this, "Account approved", Toast.LENGTH_SHORT).show();
+
+                            Account newStatusAccount = account;
+                            newStatusAccount.setStatus("approved");
+
+                            Emailer.sendEmailForRegistrationStatus(account, true);
+                            LocalNotifier.sendRequestStatusNotification(AdminActivity.this, account, true);
                             if (viewer.equals("pending")) {
                                 accessor.getPendingAccounts(AdminActivity.this);
                             } else {
@@ -100,6 +107,12 @@ public class AdminActivity extends AppCompatActivity implements AdminCallback  {
                         @Override
                         public void onApprovalSuccess() {
                             Toast.makeText(AdminActivity.this, "Account rejected", Toast.LENGTH_SHORT).show();
+
+                            Account newStatusAccount = account;
+                            newStatusAccount.setStatus("rejected");
+
+                            Emailer.sendEmailForRegistrationStatus(newStatusAccount, false);
+                            LocalNotifier.sendRequestStatusNotification(AdminActivity.this, newStatusAccount, false);
                             if (viewer.equals("pending")) {
                                 accessor.getPendingAccounts(AdminActivity.this);
                             } else {

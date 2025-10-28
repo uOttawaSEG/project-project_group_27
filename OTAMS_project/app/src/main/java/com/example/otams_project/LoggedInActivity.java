@@ -24,6 +24,13 @@ public class LoggedInActivity extends AppCompatActivity {
         if (newAccount != null) {
             account = newAccount;
         }
+/*
+        if (account.getRole().equals("tutor")) {
+            Toast.makeText(this, ((Tutor)account.getUser()).toFancyString(), Toast.LENGTH_LONG).show();
+        }
+
+ */
+
 
         String roleToDisplay = "User";
         String welcomeMessage = "Account should not be null";

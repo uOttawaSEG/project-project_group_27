@@ -16,6 +16,11 @@ public class Student extends User {
         return program;
     }
 
+    @Override
+    public String toFancyString() {
+        return "Program: " + program;
+    }
+
 
     public static Account register(String firstName, String lastName, String email , String password, String phone , String program) {
         Student student = new Student(firstName, lastName, phone);
