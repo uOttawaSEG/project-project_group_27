@@ -94,7 +94,7 @@ public class AdminActivity extends AppCompatActivity {
                 .setTitle("Status: " + account.getStatus())
                 .setMessage(account.toFancyString())
                 .setPositiveButton("Approve", (dialog, which) -> {
-                    adminActions.approveAccount(account, new ApprovalCallback() {
+                    adminActions.approveAccount(currentView, account, new ApprovalCallback() {
                         @Override
                         public void onApprovalSuccess() {
                             showToast("Account approved");

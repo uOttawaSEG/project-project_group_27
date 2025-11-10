@@ -14,9 +14,11 @@ public class AdminActions {
     public void loadRejectedAccounts(AdminCallback callback) {
         accessor.getRejectedAccounts(callback);
     }
-
-    public void approveAccount(Account account, ApprovalCallback callback) {
-        accessor.approveAccount(account.getEmail(), new ApprovalCallback() {
+//Notice approve account takes status as a parameter when reject doesnt
+//This is cause we now need to know where to look in our firebase depending on the status of the account
+//You can approve a pending or rejected account but can only reject a pending account
+    public void approveAccount(String status, Account account, ApprovalCallback callback) {
+        accessor.approveAccount(status, account.getEmail(), new ApprovalCallback() {
 
 
             @Override
@@ -32,6 +34,7 @@ public class AdminActions {
             }
         });
     }
+    //Already knows where to look, must be pending to be rejected
     public void rejectAccount(Account account, ApprovalCallback callback) {
         accessor.rejectAccount(account.getEmail(), new ApprovalCallback() {
 
