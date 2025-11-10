@@ -61,9 +61,7 @@ public class StudentRegisterActivity extends FieldValidatorActivity implements R
 
         submitted = true;
 
-        Account account = Student.register(firstName, lastName, email, password, phone , program);
-        FirebaseAccessor accessor = FirebaseAccessor.getInstance();
-        accessor.writeNewAccount(this, account);
+        Student.register(this, firstName, lastName, email, password, phone , program);
 
 
     }

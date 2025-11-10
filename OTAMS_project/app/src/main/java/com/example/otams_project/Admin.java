@@ -10,6 +10,7 @@ public class Admin extends User{
     }
 
 
+    //Incomplete functionality since Admin accounts are manually added
     public static Account register(String firstName, String lastName, String email , String password, String phone) {
         Admin admin = new Admin(firstName, lastName, phone);
         Account account = new Account(email, password, "admin", admin);

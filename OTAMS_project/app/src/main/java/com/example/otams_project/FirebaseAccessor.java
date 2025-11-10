@@ -29,7 +29,6 @@ public class FirebaseAccessor {
         return accessor;
     }
 
-    @SuppressWarnings("unused")
     //Now checks if email exists in pending database and account database before writing new account
     public void writeNewAccount(Register caller, Account account) {
 
