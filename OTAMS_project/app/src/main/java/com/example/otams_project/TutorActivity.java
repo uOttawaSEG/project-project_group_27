@@ -221,7 +221,7 @@ public class TutorActivity extends AppCompatActivity {
                     }
 
 
-                    tutorActions.createAvailabilitySlot(tutorEmail, date, start, end, requiresApproval , booked);
+                    tutorActions.createAvailabilitySlot(this,tutorEmail, date, start, end, requiresApproval , booked);
 
 
 
