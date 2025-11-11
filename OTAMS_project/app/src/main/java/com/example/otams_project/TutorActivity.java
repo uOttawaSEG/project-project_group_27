@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
@@ -206,31 +207,44 @@ public class TutorActivity extends AppCompatActivity {
         layout.addView(bookedBox);
 
 
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Create Availability Slot")
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Create Availability Slot")
                 .setView(layout)
-                .setPositiveButton("Create", (dialog, which) -> {
-                    String date = dateInput.getText().toString().trim();
-                    String start = startTimeInput.getText().toString().trim();
-                    String end = endTimeInput.getText().toString().trim();
-                    boolean requiresApproval = requiresApprovalBox.isChecked();
-                    boolean booked = bookedBox.isChecked();
+                .setPositiveButton("Create" , null)
+                .setNegativeButton("Cancel", null);
+        AlertDialog dialog = builder.create();
+        dialog.show();
 
-                    if (date.isEmpty() || start.isEmpty() || end.isEmpty()) {
-                        showToast("Please fill in all fields");
-                        return;
-                    }
+        dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(v -> {
+            String date = dateInput.getText().toString().trim();
+            String start = startTimeInput.getText().toString().trim();
+            String end = endTimeInput.getText().toString().trim();
+            boolean requiresApproval = requiresApprovalBox.isChecked();
+            boolean booked = bookedBox.isChecked();
+
+            if (date.isEmpty() || start.isEmpty() || end.isEmpty()) {
+                showToast("Please fill in all fields");
+                return;
+            }
+            if (!date.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                showToast("Date must be in format YYYY-MM-DD");
+                return;
+            }
+            if (!start.matches("([01]\\d|2[0-3]):[0-5]\\d") || !end.matches("([01]\\d|2[0-3]):[0-5]\\d")) {
+                showToast("Time must be in 24-hour format HH:mm");
+                return;
+            }
+            if (start.compareTo(end) >= 0) {
+                showToast("End time must be after start time");
+                return;
+            }
+            tutorActions.createAvailabilitySlot(this, tutorEmail, date, start, end, requiresApproval, booked);
+            showToast("Slot created!");
+            showAvailability();
+            dialog.dismiss();
+        });
 
 
-                    tutorActions.createAvailabilitySlot(this,tutorEmail, date, start, end, requiresApproval , booked);
-
-
-
-                    showToast("Slot created!");
-                    showAvailability();
-                })
-                .setNegativeButton("Cancel", null)
-                .show();
     }
 
 
