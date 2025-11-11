@@ -1,9 +1,11 @@
 package com.example.otams_project;
-import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import android.content.Context;
+import android.widget.Toast;
 
 public class TutorActions {
 
@@ -25,16 +27,18 @@ public class TutorActions {
     }
 
     public void createAvailabilitySlot(Context context, String tutorEmail, String date, String startTime, String endTime, boolean requiresApproval , boolean booked) {
-        AvailabilitySlots slot = new AvailabilitySlots(startTime, endTime, tutorEmail, date, requiresApproval , booked);
+
+
+
         if(date.compareTo(getDate())<0){
             Toast.makeText(context,"Error! Slot cannot be in the past. ",Toast.LENGTH_SHORT).show();
-        return;}
+            return;}
         if(!(startTime.endsWith("00") || startTime.endsWith("30"))){
             Toast.makeText(context,"Invalid timing format",Toast.LENGTH_SHORT).show();
-        return;}
+            return;}
         if(!(endTime.endsWith("00")|| endTime.endsWith("30"))){
             Toast.makeText(context,"Invalid timing format",Toast.LENGTH_SHORT).show();
-        return;}
+            return;}
         accessor.getTutorSlots(tutorEmail, new AvailabilitySlotsCallback() {
             @Override
             public void onAvailabilitySlotsFetched(List<AvailabilitySlots> availabilitySlots) {
@@ -47,22 +51,23 @@ public class TutorActions {
                     }
                 }
 
-                //If no overlap found create a slot
-                accessor.createAvailabilitySlot(new AvailabilitySlots(startTime, endTime, tutorEmail, date, requiresApproval, booked));
-                Toast.makeText(context, "Slot created successfully!", Toast.LENGTH_SHORT).show();
-            }
+                AvailabilitySlots slot = new AvailabilitySlots(startTime, endTime, tutorEmail, date, requiresApproval, booked);
+                accessor.createAvailabilitySlot(slot);
 
-        if(booked){
-            String status = requiresApproval ? "pending" : "approved";
-            Sessions session = new Sessions(tutorEmail, "exstudent@gmail.com", date, startTime, endTime, status);
-            accessor.createSession(session);
-        }
-            @Override
-            public void onError(String message) {
-                Toast.makeText(context,"Error loading slots", Toast.LENGTH_SHORT).show();
 
+                if (booked) {
+                    String status = requiresApproval ? "pending" : "approved";
+                    Sessions session = new Sessions(tutorEmail, "exstudent@gmail.com", date, startTime, endTime, status);
+                    accessor.createSession(session);
+                }
             }
-        });
+                public void onError(String message) {
+                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
+                }
+            });
+
+
+
     }
 
 
