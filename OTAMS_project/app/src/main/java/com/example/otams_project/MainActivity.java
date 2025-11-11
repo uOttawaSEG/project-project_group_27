@@ -9,8 +9,6 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    private final LocalDataStorage storage = LocalDataStorage.getInstance();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -18,7 +16,7 @@ public class MainActivity extends AppCompatActivity {
         LocalNotifier.initializeNotificationChannels(this);
     }
     public void onLoginClick(View view){
-        if (storage.isLoginStatus()) {
+        if (LocalDataStorage.isLoginStatus()) {
             startActivity( new Intent(MainActivity.this , LoggedInActivity.class));
         } else {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));

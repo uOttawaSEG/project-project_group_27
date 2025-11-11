@@ -18,7 +18,6 @@ public class AdminActivity extends AppCompatActivity {
     private AdminActions adminActions;
     private List<Account> accounts;
     private String currentView = "pending";
-    private final LocalDataStorage storage = LocalDataStorage.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +25,7 @@ public class AdminActivity extends AppCompatActivity {
         setContentView(R.layout.activity_admin);
 
         accountListView = findViewById(R.id.accountListView);
-        adminAccount = storage.getAccount();
+        adminAccount = LocalDataStorage.getAccount();
         adminActions = new AdminActions();
 
         loadPendingAccounts();
@@ -35,7 +34,7 @@ public class AdminActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        if (adminAccount != storage.getAccount()) {
+        if (adminAccount != LocalDataStorage.getAccount()) {
             finish();
         }
     }

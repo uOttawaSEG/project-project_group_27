@@ -14,7 +14,6 @@ import android.widget.Toast;
 public class LoggedInActivity extends AppCompatActivity {
 
     Account account;
-    private final LocalDataStorage storage = LocalDataStorage.getInstance();
 
 
 
@@ -29,7 +28,7 @@ public class LoggedInActivity extends AppCompatActivity {
         adminControlsButton.setVisibility(View.INVISIBLE);
         tutorButton.setVisibility(View.INVISIBLE);
 
-        account = storage.getAccount();
+        account = LocalDataStorage.getAccount();
         Account newAccount = (Account) getIntent().getSerializableExtra("NewAccount");
         if (newAccount != null) {
             account = newAccount;
@@ -114,9 +113,9 @@ public class LoggedInActivity extends AppCompatActivity {
 
     }
     public void onLogoutButtonClick(View view){
-        if (storage.isLoginStatus()) {
-            Toast.makeText(this, "You have been logged out of the " + storage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
-            storage.getAccount().logout();
+        if (LocalDataStorage.isLoginStatus()) {
+            Toast.makeText(this, "You have been logged out of the " + LocalDataStorage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
+            LocalDataStorage.getAccount().logout();
         }
         finish();
     }
@@ -134,7 +133,7 @@ public class LoggedInActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
-        if (account != storage.getAccount()) {
+        if (account != LocalDataStorage.getAccount()) {
             if (!getIntent().getBooleanExtra("LogNewAccount", false)) {
                 finish();
             } else {
