@@ -1,5 +1,7 @@
 package com.example.otams_project;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.firebase.database.DataSnapshot;
@@ -29,7 +31,7 @@ public class FirebaseAccessor {
         return accessor;
     }
     //Now checks if email exists in pending database and account database before writing new account
-    public void writeNewAccount(Register caller, Account account) {
+    public void writeNewAccount(RegisterCallback caller, Account account) {
 
         Query query = database.child("pending").orderByChild("email").equalTo(account.getEmail());
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -67,9 +69,13 @@ public class FirebaseAccessor {
         });
 
     }
-//Checks if email exists in account database before logging in
-    public void doesEmailMatchPassword(Login caller, String email, String password) {
-        Query query = database.child("account").orderByChild("email").equalTo(email);
+//Checks if email exists in account, pending, or rejected database before logging in
+    public void doesEmailMatchPassword(LoginCallback caller, String email, String password) {
+        doesEmailMatchAtQueryPassword(caller, email, password, "account");
+    }
+
+    private void doesEmailMatchAtQueryPassword(LoginCallback caller, String email, String password, String queryLocation) {
+        Query query = database.child(queryLocation).orderByChild("email").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -82,13 +88,31 @@ public class FirebaseAccessor {
                                     loadUserData(foundAccount, child);
                                     caller.approveSignIn(foundAccount);
                                 } else {
+                                    //No duplicate emails in database
+                                    //No need to check others
                                     caller.denySignIn();
                                 }
                                 return;
                             }
                     }
                 } else {
-                    caller.denySignIn();
+
+                    switch (queryLocation) {
+                        case "account":
+                            doesEmailMatchAtQueryPassword(caller, email, password, "pending");
+                            break;
+                        case "pending":
+                            doesEmailMatchAtQueryPassword(caller, email, password, "rejected");
+                            break;
+                        case "rejected":
+                            caller.denySignIn();
+                            break;
+                        default:
+                            Log.d("DatabaseSearch", "Unexpected queryLocation");
+                            caller.denySignIn();
+                            break;
+                    }
+
                 }
             }
 
@@ -97,7 +121,6 @@ public class FirebaseAccessor {
                 System.out.println("Failed to find if email and password match");
             }
         });
-
     }
 
 //Methods for writing to firebase, depending on status of account

@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 
 
-public class StudentRegisterActivity extends FieldValidatorActivity implements Register {
+public class StudentRegisterActivity extends FieldValidatorActivity implements RegisterCallback {
     private EditText firstNameInput;
     private EditText lastNameInput;
     private EditText emailInput;

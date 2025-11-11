@@ -29,7 +29,7 @@ public class Tutor extends User {
 
 
 
-    public static Account register(Register context, String firstName, String lastName, String email , String password, String phone , String degree, String courses) {
+    public static Account register(RegisterCallback context, String firstName, String lastName, String email , String password, String phone , String degree, String courses) {
         Tutor tutor = new Tutor(firstName, lastName, phone);
         Account account = new Account(email, password, "tutor", tutor);
         tutor.degree = degree;

@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 public class RegisterActivity extends AppCompatActivity{
 
+    private final LocalDataStorage storage = LocalDataStorage.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,16 +18,16 @@ public class RegisterActivity extends AppCompatActivity{
 
     public void onStudentClick(View view){
         startActivity( new Intent(RegisterActivity.this , StudentRegisterActivity.class));
-        if (LocalDataStorage.isLoginStatus()) {
-            Toast.makeText(this, "You have been logged out of the " + LocalDataStorage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
-            LocalDataStorage.getAccount().logout();
+        if (storage.isLoginStatus()) {
+            Toast.makeText(this, "You have been logged out of the " + storage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
+            storage.getAccount().logout();
         }
     }
     public void onTutorClick(View view){
         startActivity( new Intent(RegisterActivity.this , TutorRegisterActivity.class));
-        if (LocalDataStorage.isLoginStatus()) {
-            Toast.makeText(this, "You have been logged out of the " + LocalDataStorage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
-            LocalDataStorage.getAccount().logout();
+        if (storage.isLoginStatus()) {
+            Toast.makeText(this, "You have been logged out of the " + storage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
+            storage.getAccount().logout();
         }
     }
 }

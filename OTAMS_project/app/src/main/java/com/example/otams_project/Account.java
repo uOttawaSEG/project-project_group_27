@@ -8,6 +8,7 @@ public class Account implements Serializable {
     private String role;
     private String status;
     private User user;
+    private final LocalDataStorage storage = LocalDataStorage.getInstance();
 
     public Account(String accountEmail, String accountPassword, String accountRole, User accountUser) {
         this.email = accountEmail;
@@ -61,10 +62,10 @@ public class Account implements Serializable {
 
 
     public void login() {
-        LocalDataStorage.setAccount(this);
+        storage.setAccount(this);
     }
 
     public void logout() {
-        LocalDataStorage.setAccount(new Account());
+        storage.setAccount(new Account());
     }
 }

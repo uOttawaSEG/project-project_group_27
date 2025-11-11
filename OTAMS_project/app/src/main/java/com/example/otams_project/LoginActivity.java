@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 
 
-public class LoginActivity extends AppCompatActivity implements Login {
+public class LoginActivity extends AppCompatActivity implements LoginCallback {
 
     private EditText emailInput;
     private EditText passwordInput;

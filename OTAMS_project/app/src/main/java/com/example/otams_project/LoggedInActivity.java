@@ -5,6 +5,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -13,13 +14,22 @@ import android.widget.Toast;
 public class LoggedInActivity extends AppCompatActivity {
 
     Account account;
+    private final LocalDataStorage storage = LocalDataStorage.getInstance();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logged_in);
 
-        account = LocalDataStorage.getAccount();
+        Button adminControlsButton = findViewById(R.id.adminButton);
+        Button tutorButton = findViewById(R.id.tutorButton);
+
+        adminControlsButton.setVisibility(View.INVISIBLE);
+        tutorButton.setVisibility(View.INVISIBLE);
+
+        account = storage.getAccount();
         Account newAccount = (Account) getIntent().getSerializableExtra("NewAccount");
         if (newAccount != null) {
             account = newAccount;
@@ -38,15 +48,6 @@ public class LoggedInActivity extends AppCompatActivity {
         String toastMessage = "Uh oh, something has gone wrong!";
 
         if (account != null) {
-            if (!account.getRole().equals("admin")) {
-                Button adminControlsButton = findViewById(R.id.adminButton);
-                adminControlsButton.setVisibility(View.INVISIBLE);
-            }
-
-            if(!account.getRole().equals("tutor")) {
-                Button tutorButton = findViewById(R.id.tutorButton);
-                tutorButton.setVisibility(View.INVISIBLE);
-            }
 
             if (account.getRole() != null) {
                 roleToDisplay = account.getRole();
@@ -66,6 +67,23 @@ public class LoggedInActivity extends AppCompatActivity {
                     case "approved":
                         welcomeMessage = "Welcome! Successfully Logged in as " + roleToDisplay;
                         toastMessage = account.getEmail() + " has signed in, they are a(n) " + account.getRole();
+
+                        switch (roleToDisplay) {
+                            case "admin":
+                                adminControlsButton.setVisibility(View.VISIBLE);
+                                break;
+                            case "tutor":
+                                tutorButton.setVisibility(View.VISIBLE);
+                                break;
+                            case "student":
+                                //TO ADD student button
+                                break;
+                            default:
+                                //Unexpected role
+                                Log.d("LoggedInRole","Unexpected role in logged in account");
+                                break;
+                        }
+
                         break;
                     case "pending":
                         welcomeMessage = "Your registration for the " + roleToDisplay + " role is pending approval";
@@ -96,9 +114,9 @@ public class LoggedInActivity extends AppCompatActivity {
 
     }
     public void onLogoutButtonClick(View view){
-        if (LocalDataStorage.isLoginStatus()) {
-            Toast.makeText(this, "You have been logged out of the " + LocalDataStorage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
-            LocalDataStorage.getAccount().logout();
+        if (storage.isLoginStatus()) {
+            Toast.makeText(this, "You have been logged out of the " + storage.getAccount().getEmail() + " account", Toast.LENGTH_LONG).show();
+            storage.getAccount().logout();
         }
         finish();
     }
@@ -116,7 +134,7 @@ public class LoggedInActivity extends AppCompatActivity {
 
     public void onResume() {
         super.onResume();
-        if (account != LocalDataStorage.getAccount()) {
+        if (account != storage.getAccount()) {
             if (!getIntent().getBooleanExtra("LogNewAccount", false)) {
                 finish();
             } else {

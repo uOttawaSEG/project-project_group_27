@@ -3,7 +3,6 @@ package com.example.otams_project;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -28,7 +27,7 @@ public class TutorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutor);
         accountListView = findViewById(R.id.accountListView);
-        Account account = LocalDataStorage.getAccount();
+        Account account = LocalDataStorage.getInstance().getAccount();
         tutorEmail = account.getEmail();
         tutorActions = new TutorActions();
         showUpcoming();

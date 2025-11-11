@@ -22,7 +22,7 @@ public class Student extends User {
     }
 
 
-    public static Account register(Register context,String firstName, String lastName, String email , String password, String phone , String program) {
+    public static Account register(RegisterCallback context, String firstName, String lastName, String email , String password, String phone , String program) {
         Student student = new Student(firstName, lastName, phone);
         Account account = new Account(email, password, "student", student);
         student.program = program;

@@ -1,6 +1,6 @@
 package com.example.otams_project;
 
-public interface Register {
+public interface RegisterCallback {
     void writeAccountFail();
     void writeAccountSuccess();
 }
