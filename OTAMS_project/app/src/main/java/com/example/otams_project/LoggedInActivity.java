@@ -43,6 +43,11 @@ public class LoggedInActivity extends AppCompatActivity {
                 adminControlsButton.setVisibility(View.INVISIBLE);
             }
 
+            if(!account.getRole().equals("tutor")) {
+                Button tutorButton = findViewById(R.id.tutorButton);
+                tutorButton.setVisibility(View.INVISIBLE);
+            }
+
             if (account.getRole() != null) {
                 roleToDisplay = account.getRole();
             }
@@ -100,6 +105,12 @@ public class LoggedInActivity extends AppCompatActivity {
     public void onAdminButtonClick(View view){
         if(account.getRole().equals("admin")){
             startActivity(new Intent(LoggedInActivity.this, AdminActivity.class));
+        }
+    }
+
+    public void onTutorButtonClick(View view) {
+        if (account.getRole().equals("tutor")) {
+            startActivity(new Intent(LoggedInActivity.this, TutorActivity.class));
         }
     }
 

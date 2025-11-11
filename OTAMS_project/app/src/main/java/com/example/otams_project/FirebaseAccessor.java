@@ -28,7 +28,6 @@ public class FirebaseAccessor {
         }
         return accessor;
     }
-
     //Now checks if email exists in pending database and account database before writing new account
     public void writeNewAccount(Register caller, Account account) {
 
@@ -162,7 +161,8 @@ public class FirebaseAccessor {
             }
         });
     }
-
+    //approveAccount now takes status to know where to look in firebase
+    //If account is found, taken out from pending/rejected and moved to account
     public void approveAccount(String status, String email, ApprovalCallback callback) {
         Query query = database.child(status).orderByChild("email").equalTo(email);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -247,5 +247,86 @@ public class FirebaseAccessor {
                 break;
         }
     }
+
+
+    public void createAvailabilitySlot(AvailabilitySlots slot){
+        DatabaseReference newKey = database.child("availability_slots").push();
+        slot.setSlotID(newKey.getKey());
+        newKey.setValue(slot);
+    }
+
+    public void createSession(Sessions session){
+        DatabaseReference newKey = database.child("sessions").push();
+        session.setSessionID(newKey.getKey());
+        newKey.setValue(session);
+    }
+
+
+    public void bookSlot(String slotID){
+        database.child("availability_slots").child(slotID).child("booked").setValue(true);
+
+    }
+    public void deleteSlot(String slotID){
+        database.child("availability_slots").child(slotID).removeValue();
+    }
+
+    public void updateSessionStatus(String sessionID, String status){
+        database.child("sessions").child(sessionID).child("status").setValue(status);
+    }
+
+
+
+    public void getTutorSlots(String tutorEmail, AvailabilitySlotsCallback callback) {
+        Query query = database.child("availability_slots").orderByChild("tutorEmail").equalTo(tutorEmail);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<AvailabilitySlots> slots = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    AvailabilitySlots slot = child.getValue(AvailabilitySlots.class);
+                    if (slot != null) {
+                        slots.add(slot);
+                    }
+                }
+                callback.onAvailabilitySlotsFetched(slots);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+    public void getTutorSessions(String tutorEmail, SessionsCallback callback) {
+        Query query = database.child("sessions").orderByChild("tutorEmail").equalTo(tutorEmail);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Sessions> sessions = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    Sessions session = child.getValue(Sessions.class);
+                    if (session != null) {
+                        session.setSessionID(child.getKey());
+                        sessions.add(session);
+                    }
+                }
+                callback.onSessionsFetched(sessions);
+            }
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
 
 }
