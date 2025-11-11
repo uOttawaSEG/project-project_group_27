@@ -1,5 +1,8 @@
 package com.example.otams_project;
 
+import android.content.Context;
+import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -21,15 +24,40 @@ public class TutorActions {
         accessor.deleteSlot(slotID);
     }
 
-    public void createAvailabilitySlot(String tutorEmail, String date, String startTime, String endTime, boolean requiresApproval , boolean booked) {
+    public void createAvailabilitySlot(Context context, String tutorEmail, String date, String startTime, String endTime, boolean requiresApproval , boolean booked) {
         AvailabilitySlots slot = new AvailabilitySlots(startTime, endTime, tutorEmail, date, requiresApproval , booked);
-        accessor.createAvailabilitySlot(slot);
+        if(date.compareTo(getDate())<0){
+            Toast.makeText(context,"Error! Slot cannot be in the past. ",Toast.LENGTH_SHORT).show();
+        return;}
+        if(!(startTime.endsWith("00") || startTime.endsWith("30"))){
+            Toast.makeText(context,"Invalid timing format",Toast.LENGTH_SHORT).show();
+        return;}
+        if(!(endTime.endsWith("00")|| endTime.endsWith("30"))){
+            Toast.makeText(context,"Invalid timing format",Toast.LENGTH_SHORT).show();
+        return;}
+        accessor.getTutorSlots(tutorEmail, new AvailabilitySlotsCallback() {
+            @Override
+            public void onAvailabilitySlotsFetched(List<AvailabilitySlots> availabilitySlots) {
+                for (AvailabilitySlots s : availabilitySlots) {
+                    if (s.getDate().equals(date)) {
+                        if (startTime.compareTo(s.getEndTime()) < 0 && endTime.compareTo(s.getStartTime()) > 0) {
+                            Toast.makeText(context, "Error! Slot overlaps with another.", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                    }
+                }
 
+                //If no overlap found create a slot
+                accessor.createAvailabilitySlot(new AvailabilitySlots(startTime, endTime, tutorEmail, date, requiresApproval, booked));
+                Toast.makeText(context, "Slot created successfully!", Toast.LENGTH_SHORT).show();
+            }
 
-        if(booked){
-            Sessions session = new Sessions(tutorEmail, "exstudentEmail@gmail.com", date, startTime, endTime, "pending");
-            accessor.createSession(session);
-        }
+            @Override
+            public void onError(String message) {
+                Toast.makeText(context,"Error loading slots", Toast.LENGTH_SHORT).show();
+
+            }
+        });
     }
 
 
