@@ -166,7 +166,7 @@ public class TutorActivity extends AppCompatActivity {
         for (AvailabilitySlots slot : currentSlots) {
             String displayText = slot.getDate() + " " +
                     slot.getStartTime() + "-" + slot.getEndTime() +
-                    " (Approval: " + (slot.isRequiresApproval() ? "No" : "Yes") + ")";
+                    " (Approval: " + (slot.isRequiresApproval() ? "Yes" : "No") + ")";
             adapter.add(displayText);
         }
         accountListView.setAdapter(adapter);
@@ -235,28 +235,41 @@ public class TutorActivity extends AppCompatActivity {
 
 
     private void showSessionDialog(Sessions session) {
-        new androidx.appcompat.app.AlertDialog.Builder(this)
-                .setTitle("Session Details")
-                .setMessage("Date: " + session.getDate() + "\n" +
-                        "Time: " + session.getStartTime() + "-" + session.getEndTime() + "\n" +
-                        "Student: " + session.getStudentEmail() + "\n" +
-                        "Status: " + session.getStatus())
-                .setPositiveButton("Approve", (dialog, which) -> {
-                    tutorActions.approveSession(session.getSessionID());
-                    showToast("Session approved");
-                    refreshCurrentView();
-                })
-                .setNegativeButton("Reject", (dialog, which) -> {
-                    tutorActions.rejectSession(session.getSessionID());
-                    showToast("Session rejected");
-                    refreshCurrentView();
-                })
-                .setNeutralButton("Cancel Session", (dialog, which) -> {
-                    tutorActions.cancelSession(session.getSessionID());
-                    showToast("Session cancelled");
-                    refreshCurrentView();
-                })
-                .show();
+        tutorActions.getStudentInfo(session.getStudentEmail(), new AccountCallback() {
+            @Override
+            public void onAccountFetched(Account account) {
+                Student student = (Student) account.getUser();
+                new androidx.appcompat.app.AlertDialog.Builder(TutorActivity.this)
+
+                        .setTitle("Session Details")
+                        .setMessage("Date: " + session.getDate() + "\n" +
+                                "Time: " + session.getStartTime() + "-" + session.getEndTime() + "\n" +
+                                "Student: " + student.getFirstName() + " " + student.getLastName() + "\n" +
+                                "Email: " + session.getStudentEmail() + "\n" +
+                                "Phone: " + student.getPhone() + "\n" +
+                                "Status: " + session.getStatus())
+                        .setPositiveButton("Approve", (dialog, which) -> {
+                            tutorActions.approveSession(session.getSessionID());
+                            showToast("Session approved");
+                            refreshCurrentView();
+                        })
+                        .setNegativeButton("Reject", (dialog, which) -> {
+                            tutorActions.rejectSession(session.getSessionID());
+                            showToast("Session rejected");
+                            refreshCurrentView();
+                        })
+                        .setNeutralButton("Cancel Session", (dialog, which) -> {
+                            tutorActions.cancelSession(session.getSessionID());
+                            showToast("Session cancelled");
+                            refreshCurrentView();
+                        })
+                        .show();
+            }
+            @Override
+            public void onError(String message) {
+                showToast(message);
+            }
+        });
     }
 
     private void showSlotDialog(AvailabilitySlots slot) {
@@ -264,7 +277,7 @@ public class TutorActivity extends AppCompatActivity {
                 .setTitle("Availability Slot")
                 .setMessage("Date: " + slot.getDate() + "\n" +
                         "Time: " + slot.getStartTime() + "-" + slot.getEndTime() + "\n" +
-                        "Requires Approval: " + (slot.isRequiresApproval() ? "No" : "Yes"))
+                        "Requires Approval: " + (slot.isRequiresApproval () ? "Yes" : "No"))
                 .setPositiveButton("Delete", (dialog, which) -> {
                     tutorActions.deleteSlot(slot.getSlotID());
                     showToast("Slot deleted");

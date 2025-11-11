@@ -19,7 +19,7 @@ public class AvailabilitySlots {
     public AvailabilitySlots(String startTime, String endTime, String tutorEmail, String date, boolean requiresApproval, boolean booked) {
         this.startTime = startTime;
         this.endTime = endTime;
-
+        this.requiresApproval = requiresApproval;
         this.tutorEmail = tutorEmail;
         this.date = date;
         this.booked = booked;
@@ -54,6 +54,13 @@ public class AvailabilitySlots {
 
     public void setSlotID(String slotID) {
         this.slotID = slotID;
+    }
+    public boolean isBooked() {
+        return booked;
+    }
+
+    public void setBooked(boolean booked) {
+        this.booked = booked;
     }
 
 

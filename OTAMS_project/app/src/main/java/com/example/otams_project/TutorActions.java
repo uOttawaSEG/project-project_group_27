@@ -1,8 +1,5 @@
 package com.example.otams_project;
-
-import android.content.Context;
 import android.widget.Toast;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -22,6 +19,9 @@ public class TutorActions {
 
     public void deleteSlot(String slotID){
         accessor.deleteSlot(slotID);
+    }
+    public void getStudentInfo(String studentEmail, AccountCallback callback) {
+        accessor.getAccountByEmail(studentEmail, callback);
     }
 
     public void createAvailabilitySlot(Context context, String tutorEmail, String date, String startTime, String endTime, boolean requiresApproval , boolean booked) {
@@ -52,6 +52,11 @@ public class TutorActions {
                 Toast.makeText(context, "Slot created successfully!", Toast.LENGTH_SHORT).show();
             }
 
+        if(booked){
+            String status = requiresApproval ? "pending" : "approved";
+            Sessions session = new Sessions(tutorEmail, "exstudent@gmail.com", date, startTime, endTime, status);
+            accessor.createSession(session);
+        }
             @Override
             public void onError(String message) {
                 Toast.makeText(context,"Error loading slots", Toast.LENGTH_SHORT).show();
