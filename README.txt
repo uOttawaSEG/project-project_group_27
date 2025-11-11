@@ -22,83 +22,82 @@ Password: admin123@
 ---
 
 ## Project Description
-OTAMS (Online Tutoring Appointment Management System) is an Android app that helps the University of Ottawa Help Centre manage tutoring appointments.  
-It supports three roles: **Student**, **Tutor**, and **Administrator**.
+OTAMS (Online Tutoring Appointment Management System) is an Android application that helps the University of Ottawa Help Centre manage tutoring appointments.  
+It supports three user roles: **Student**, **Tutor**, and **Administrator**.
 
-### Deliverable 2 Adds
-- Full **Administrator approval workflow** using Firebase Realtime Database  
-- Accounts stored with a `status` field (`pending / approved / rejected`)  
-- Students and Tutors must be approved before they can log in  
-- **AdminActivity**: view pending or rejected requests and approve/reject them  
-- **PendingApprovalActivity**: shows message that approval is waiting  
-- Rejection screen shows contact message for administration  
-- Updated **Account**, **Student**, and **Tutor** classes with role-specific data  
-- Clean `toString()` display of all user information (email, role, status, name, phone, program or courses)  
+### Deliverable 3 Adds
+This deliverable focuses on **Tutor features**.  
+Tutors can now:
+- **Create availability slots** by selecting a date, start time, and end time.  
+- Choose whether session requests require manual approval or are automatically approved.  
+- View **upcoming**, **past**, and **pending** sessions.  
+- View student information for each session.  
+- **Approve, reject, or cancel** session requests.  
+- **Delete** availability slots they have created.  
+- (Validation coming) Only create slots in 30-minute increments, on future dates, and without overlaps.  
 
 ---
 
 ## How to Use the App
 1. **Install the APK:** `Project_Group_27_debug.apk`  
-2. Choose **Register** → fill the **Student** or **Tutor** form and submit.  
-   - A success message appears: *“Registration successful – awaiting administrator approval.”*  
-3. Return to **Login** and enter your credentials.  
-   - If **approved**, you reach the Welcome screen.  
-   - If **pending**, you see the “Pending Approval” screen.  
-   - If **rejected**, you see a rejection message with a (fake) contact number.  
-4. **Administrator Login:** use the credentials above to access AdminActivity.  
-   - View pending and rejected accounts.  
-   - Tap an account → popup appears → Approve ✅ or Reject ❌.  
-   - Firebase updates the status immediately and the list refreshes.  
+2. **Register** as a Student or Tutor.  
+   - Newly registered accounts require administrator approval.  
+3. **Administrator:** log in using the credentials above to approve or reject requests.  
+4. **Tutor Login:** once approved, tutors can:
+   - View upcoming, past, and pending sessions.  
+   - Create or delete availability slots.  
+   - Approve / reject student session requests.  
+5. **Student Login (future deliverable):** students will be able to book sessions based on available slots.
 
 ---
 
 ## Files Included in Release
-- APK file (`Project_Group_27_debug.apk`)  
-- UML Class Diagram (`Deliverable 2 Class Diagram.pdf`)  
-- Demo video (`Deliverable 2 Demo.mp4`)  
-- Updated README file (`README_D2.md`)  
+- **APK:** `Project_Group_27_debug.apk`  
+- **UML Diagram:** `Deliverable 3 Class Diagram.pdf`  
+- **Demo Video:** `Deliverable 3 Demo.mp4`  
+- **Updated README:** `README_D3.md`
 
 ---
 
 ## Technical Details
 | Item | Description |
 |------|--------------|
-| Programming Language | Java |
+| Language | Java |
 | IDE | Android Studio |
 | Database | Firebase Realtime Database |
 | Minimum SDK | 24 (Android 7.0 Nougat) |
-| Key Classes | Account, User, Student, Tutor, FirebaseAccessor, AdminActivity, PendingApprovalActivity |
-| Key Interfaces | AdminCallback, ApprovalCallback |
+| Key Classes | Account, AvailabilitySlots, Sessions, TutorActions, FirebaseAccessor, TutorActivity |
+| Key Interfaces | AvailabilitySlotsCallback, SessionsCallback |
 
 ---
 
-## What’s New in Deliverable 2
-- Integrated Firebase Realtime Database for persistent storage  
-- Added Administrator dashboard (AdminActivity)  
-- Added PendingApprovalActivity for unapproved users  
-- Added status handling (`pending / approved / rejected`) in Account.java  
-- Enhanced Account.toString() to show program/courses information  
-- Implemented approval and rejection logic through FirebaseAccessor  
-- Improved UI and spacing for account information display   
+## What’s New in Deliverable 3
+- Added **TutorActivity** screen with all core tutor functions.  
+- Implemented **TutorActions** backend class connecting to Firebase.  
+- Added **AvailabilitySlots** and **Sessions** classes to store tutor availability and bookings.  
+- Integrated **FirebaseAccessor** for creating, reading, and deleting slots / sessions.  
+- Improved navigation between different tutor views (upcoming, pending, past, availability).  
+- Added dialog pop-ups for viewing details and taking actions (approve, reject, cancel, delete).  
+- UI refinements for tutor controls and lists.  
 
 ---
 
 ## Submission Information
-- **Release Tag:** `v0.2`  
-- **Release Title:** Deliverable 2  
-- All required files uploaded to GitHub Release  
+- **Release Tag:** `v0.3`  
+- **Release Title:** Deliverable 3  
+- All required files uploaded to GitHub Release.  
 
 ---
 
-## Testing the Approval Flow
-1. Register a **Student** or **Tutor** with new credentials.  
-2. Try logging in — you’ll be redirected to the *Pending Approval* screen.  
-3. Log in using **Admin credentials** (above).  
-4. Approve or reject the account in the Admin panel.  
-5. Log back in as the Student/Tutor:  
-   - If approved → access the logged-in screen.  
-   - If rejected → redirected to rejection message.
+## Testing Tutor Features
+1. **Login** as Tutor.  
+2. Click **“New”** → create an availability slot (future date, 30-minute increments).  
+3. Check **“Requires approval”** to enable manual session control.  
+4. View the slot under **Availability** tab.  
+5. View **Pending Sessions** → approve, reject, or cancel.  
+6. View **Past** and **Upcoming** sessions lists.  
+7. Delete a slot using the Delete option in the dialog.  
 
 ---
 
-**Deliverable 2 Complete:** Functional admin approval system, Firebase integration, improved UI, and role-specific data handling.
+**Deliverable 3 Complete:** Tutor functionality implemented with Firebase integration, validation, and user interface updates.
