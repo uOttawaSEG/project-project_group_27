@@ -14,8 +14,8 @@ import java.util.List;
 public class AdminActivity extends AppCompatActivity {
 
     private Account adminAccount;
+    private Admin admin;
     private ListView accountListView;
-    private AdminActions adminActions;
     private List<Account> accounts;
     private String currentView = "pending";
 
@@ -26,7 +26,12 @@ public class AdminActivity extends AppCompatActivity {
 
         accountListView = findViewById(R.id.accountListView);
         adminAccount = LocalDataStorage.getAccount();
-        adminActions = new AdminActions();
+        if (adminAccount.getUser().getClass() != Admin.class) {
+            finish();
+            return;
+        }
+        admin = (Admin)adminAccount.getUser();
+        admin.initializeActions();
 
         loadPendingAccounts();
     }
@@ -41,7 +46,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private void loadPendingAccounts() {  //method to load pending accounts
         currentView = "pending";
-        adminActions.loadPendingAccounts(new AdminCallback() {
+        admin.loadPendingAccounts(new AdminCallback() {
             @Override
             public void onAccountsFetched(List<Account> fetchedAccounts) {
                 accounts = fetchedAccounts;
@@ -57,7 +62,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private void loadRejectedAccounts() { //method to load rejected accounts
         currentView = "rejected";
-        adminActions.loadRejectedAccounts(new AdminCallback() {
+        admin.loadRejectedAccounts(new AdminCallback() {
             @Override
             public void onAccountsFetched(List<Account> fetchedAccounts) {
                 accounts = fetchedAccounts;
@@ -94,11 +99,11 @@ public class AdminActivity extends AppCompatActivity {
                 .setTitle("Status: " + account.getStatus())
                 .setMessage(account.toFancyString())
                 .setPositiveButton("Approve", (dialog, which) -> {
-                    adminActions.approveAccount(currentView, account, new ApprovalCallback() {
+                    admin.approveAccount(currentView, account, new ApprovalCallback() {
                         @Override
                         public void onApprovalSuccess() {
                             showToast("Account approved");
-                            adminActions.reloadAccounts(currentView, new AdminCallback() {
+                            admin.reloadAccounts(currentView, new AdminCallback() {
                                 @Override
                                 public void onAccountsFetched(List<Account> fetchedAccounts) {
                                     accounts = fetchedAccounts;
@@ -119,11 +124,11 @@ public class AdminActivity extends AppCompatActivity {
                     });
                 })
                 .setNegativeButton("Reject", (dialog, which) -> {
-                    adminActions.rejectAccount(account, new ApprovalCallback() {
+                    admin.rejectAccount(account, new ApprovalCallback() {
                         @Override
                         public void onApprovalSuccess() {
                             showToast("Account rejected");
-                            adminActions.reloadAccounts(currentView, new AdminCallback() {
+                            admin.reloadAccounts(currentView, new AdminCallback() {
                                 @Override
                                 public void onAccountsFetched(List<Account> fetchedAccounts) {
                                     accounts = fetchedAccounts;

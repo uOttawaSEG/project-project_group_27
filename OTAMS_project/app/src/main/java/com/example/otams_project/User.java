@@ -1,11 +1,14 @@
 package com.example.otams_project;
 
+import android.util.Log;
+
 import java.io.Serializable;
 
 public class User implements Serializable{
     private String firstName;
     private String lastName;
     private String phone;
+    private Account account;
 
     protected User(String firstName, String lastName, String phone){
         this.firstName = firstName;
@@ -30,6 +33,16 @@ public class User implements Serializable{
 
     public String getPhone(){
         return phone;
+    }
+    public Account getAccount(boolean notDatabase) {
+        return account;
+    }
+    public void setAccount(Account account) {
+        if (account.getUser() == this) {
+            this.account = account;
+        } else {
+            Log.d("User","Tried to set user's account to an account which does not contain this user");
+        }
     }
 
     public String toFancyString() {

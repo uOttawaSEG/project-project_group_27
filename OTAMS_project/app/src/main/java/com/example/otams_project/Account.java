@@ -65,6 +65,6 @@ public class Account implements Serializable {
     }
 
     public void logout() {
-        LocalDataStorage.setAccount(new Account());
+        LocalDataStorage.setAccount(null);
     }
 }

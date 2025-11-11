@@ -3,7 +3,6 @@ package com.example.otams_project;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -16,8 +15,7 @@ public class TutorActivity extends AppCompatActivity {
 
     private ListView accountListView;
 
-    private TutorActions tutorActions;
-    private String tutorEmail;
+    private Tutor tutor;
     private String currentView = "upcoming";
 
     private List<Sessions> currentSessions = new ArrayList<>();
@@ -28,9 +26,12 @@ public class TutorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutor);
         accountListView = findViewById(R.id.accountListView);
-        Account account = LocalDataStorage.getAccount();
-        tutorEmail = account.getEmail();
-        tutorActions = new TutorActions();
+        if (LocalDataStorage.getAccount().getUser().getClass() != Tutor.class) {
+            finish();
+            return;
+        }
+        tutor = (Tutor)LocalDataStorage.getAccount().getUser();
+        tutor.initializeActions();
         showUpcoming();
     }
 
@@ -62,7 +63,7 @@ public class TutorActivity extends AppCompatActivity {
         currentView = "upcoming";
 
 
-        tutorActions.loadUpcomingSessions(tutorEmail, new SessionsCallback() {
+        tutor.loadUpcomingSessions(new SessionsCallback() {
             @Override
             public void onSessionsFetched(List<Sessions> sessions) {
                 currentSessions = sessions;
@@ -80,7 +81,7 @@ public class TutorActivity extends AppCompatActivity {
         currentView = "past";
 
 
-        tutorActions.loadPastSessions(tutorEmail, new SessionsCallback() {
+        tutor.loadPastSessions(new SessionsCallback() {
             @Override
             public void onSessionsFetched(List<Sessions> sessions) {
                 currentSessions = sessions;
@@ -98,7 +99,7 @@ public class TutorActivity extends AppCompatActivity {
         currentView = "pending";
 
 
-        tutorActions.loadPendingSessions(tutorEmail, new SessionsCallback() {
+        tutor.loadPendingSessions(new SessionsCallback() {
             @Override
             public void onSessionsFetched(List<Sessions> sessions) {
                 currentSessions = sessions;
@@ -116,7 +117,7 @@ public class TutorActivity extends AppCompatActivity {
         currentView = "availability";
 
 
-        tutorActions.loadTutorSlots(tutorEmail, new AvailabilitySlotsCallback() {
+        tutor.loadTutorSlots(new AvailabilitySlotsCallback() {
             @Override
             public void onAvailabilitySlotsFetched(List<AvailabilitySlots> slots) {
                 currentSlots = slots;
@@ -222,7 +223,7 @@ public class TutorActivity extends AppCompatActivity {
                     }
 
 
-                    tutorActions.createAvailabilitySlot(this,tutorEmail, date, start, end, requiresApproval , booked);
+                    tutor.createAvailabilitySlot(this, date, start, end, requiresApproval , booked);
 
 
 
@@ -242,17 +243,17 @@ public class TutorActivity extends AppCompatActivity {
                         "Student: " + session.getStudentEmail() + "\n" +
                         "Status: " + session.getStatus())
                 .setPositiveButton("Approve", (dialog, which) -> {
-                    tutorActions.approveSession(session.getSessionID());
+                    tutor.approveSession(session.getSessionID());
                     showToast("Session approved");
                     refreshCurrentView();
                 })
                 .setNegativeButton("Reject", (dialog, which) -> {
-                    tutorActions.rejectSession(session.getSessionID());
+                    tutor.rejectSession(session.getSessionID());
                     showToast("Session rejected");
                     refreshCurrentView();
                 })
                 .setNeutralButton("Cancel Session", (dialog, which) -> {
-                    tutorActions.cancelSession(session.getSessionID());
+                    tutor.cancelSession(session.getSessionID());
                     showToast("Session cancelled");
                     refreshCurrentView();
                 })
@@ -266,7 +267,7 @@ public class TutorActivity extends AppCompatActivity {
                         "Time: " + slot.getStartTime() + "-" + slot.getEndTime() + "\n" +
                         "Requires Approval: " + (slot.isRequiresApproval() ? "No" : "Yes"))
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    tutorActions.deleteSlot(slot.getSlotID());
+                    tutor.deleteSlot(slot.getSlotID());
                     showToast("Slot deleted");
                     showAvailability();
                 })
