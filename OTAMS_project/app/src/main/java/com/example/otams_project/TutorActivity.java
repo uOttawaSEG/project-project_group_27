@@ -15,6 +15,7 @@ public class TutorActivity extends AppCompatActivity {
 
     private ListView accountListView;
 
+    private Account tutorAccount;
     private Tutor tutor;
     private String currentView = "upcoming";
 
@@ -26,13 +27,22 @@ public class TutorActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tutor);
         accountListView = findViewById(R.id.accountListView);
-        if (LocalDataStorage.getAccount().getUser().getClass() != Tutor.class) {
+        tutorAccount = LocalDataStorage.getAccount();
+        if (tutorAccount.getUser().getClass() != Tutor.class) {
             finish();
             return;
         }
-        tutor = (Tutor)LocalDataStorage.getAccount().getUser();
+        tutor = (Tutor)tutorAccount.getUser();
         tutor.initializeActions();
         showUpcoming();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (tutorAccount != LocalDataStorage.getAccount()) {
+            finish();
+        }
     }
 
     public void onUpcomingClick(View view) {
