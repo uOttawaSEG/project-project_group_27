@@ -12,12 +12,16 @@
         android:id="@+id/titleText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Request Approval"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="4dp"
+        android:text="Approval Requests"
+        android:textColor="@android:color/holo_green_dark"
         android:textSize="30dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/logOutButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,6 +36,7 @@
         />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/pendingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -47,6 +52,7 @@
         />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/rejectedButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

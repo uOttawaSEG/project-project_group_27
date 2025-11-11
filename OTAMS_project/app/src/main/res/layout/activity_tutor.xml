@@ -10,6 +10,7 @@
 
     <!-- Title -->
     <TextView
+        android:textColor="@android:color/holo_green_dark"
         android:id="@+id/titletxt"
         android:layout_width="176dp"
         android:layout_height="41dp"
@@ -21,6 +22,7 @@
 
     <!-- Top Row: Back, Availability, New -->
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/backButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -32,6 +34,7 @@
 
     <!-- Second Row: Past, Upcoming, Pending -->
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/availabilityButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -42,6 +45,7 @@
         app:layout_constraintTop_toTopOf="@id/backButton" />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/newButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,6 +56,7 @@
         app:layout_constraintTop_toTopOf="@id/backButton" />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/pastButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -64,6 +69,7 @@
     <!-- ListView under the second row -->
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/upcomingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,6 +80,7 @@
         app:layout_constraintTop_toTopOf="@id/pastButton" />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/pendingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -8,6 +8,8 @@
     tools:context=".LoggedInActivity">
 
     <TextView
+        android:textStyle="bold"
+        android:textColor="@android:color/holo_green_dark"
         android:id="@+id/textView3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -26,6 +28,7 @@
 
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/logoutInput"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -41,6 +44,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView3" />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/adminButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,6 +56,7 @@
         android:onClick="onAdminButtonClick" />
 
     <Button
+        android:backgroundTint="@android:color/holo_green_dark"
         android:id="@+id/tutorButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
