@@ -6,8 +6,12 @@ import java.util.Calendar;
 import java.util.List;
 import android.content.Context;
 import android.widget.Toast;
-public class StudentAction {
+public class StudentAction implements StudentSessionCallback {
+    private List<Sessions> pastSessions;
+    private List<Sessions> upcomingSessions;
     private final FirebaseAccessor accessor;
+    private StudentSessionCallback storedCallback;
+
     public StudentAction(){
         accessor=FirebaseAccessor.getInstance();
     }
@@ -43,5 +47,45 @@ public class StudentAction {
             accessor.bookSlot(slot.getSlotID());
 
         }
+        public void getStudentSessions(String studentEmail, StudentSessionCallback callback){
+        this.storedCallback=callback;
+        accessor.getStudentSessions(studentEmail,this);
 
+
+        }
+
+
+    @Override
+    public void onSessionsFetched(List<Sessions> sessions) {
+        String today= getDate();
+         pastSessions= new ArrayList<>();
+         upcomingSessions= new ArrayList<>();
+        for(Sessions s: sessions){
+            if(s.getDate().compareTo(today)>=0)
+                upcomingSessions.add(s);
+            else
+                pastSessions.add(s);
+
+        }
+        if(storedCallback!=null)
+            storedCallback.onSessionsFetched(sessions);
+
+
+    }
+
+    @Override
+    public void onError(String message) {
+
+
+    }
+
+
+
+
+    private String getDate(){
+        Calendar calendar = Calendar.getInstance();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String date = dateFormat.format(calendar.getTime());
+        return date;
+    }
 }

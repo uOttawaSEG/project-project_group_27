@@ -370,6 +370,31 @@ public class FirebaseAccessor {
             }
         });
     }
+    public void getStudentSessions(String studentEmail,StudentSessionCallback callback){
+        Query query= database.child("sessions").orderByChild("studentEmail").equalTo(studentEmail);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<Sessions> sessions= new ArrayList<>();
+                for (DataSnapshot child: snapshot.getChildren()){
+                    Sessions session= child.getValue(Sessions.class);
+                    if(session!=null){
+                        session.setSessionID(child.getKey());
+                        sessions.add(session);
+                    }
+
+                }
+                callback.onSessionsFetched(sessions);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError(error.getMessage());
+
+            }
+        });
+
+    }
 
 }
 
