@@ -9,11 +9,13 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import android.content.Intent;
+import android.provider.CalendarContract;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class StudentActivity extends AppCompatActivity implements RatingCallback{
@@ -239,6 +241,36 @@ public class StudentActivity extends AppCompatActivity implements RatingCallback
                 }
 
                 builder.setNegativeButton("Back", null)
+                .setNeutralButton("Add to Calendar",(dialog, which) -> {
+                String[] dateParts= session.getDate().split("-");
+                int year=Integer.parseInt(dateParts[0]);
+                int month=Integer.parseInt(dateParts[1])-1;
+                int day = Integer.parseInt(dateParts[2]);
+                String[] startParts= session.getStartTime().split(":");
+                int startHour= Integer.parseInt(startParts[0]);
+                int startMinute= Integer.parseInt(startParts[1]);
+                String[] endParts = session.getEndTime().split(":");
+                int endHour= Integer.parseInt(endParts[0]);
+                int endMinute= Integer.parseInt(endParts[1]);
+                Calendar startCal= Calendar.getInstance();
+                startCal.set(year,month,day,startHour,startMinute);
+                Calendar endCal= Calendar.getInstance();
+                endCal.set(year,month,day,endHour,endMinute);
+                long startMillis= startCal.getTimeInMillis();
+                long endMillis=endCal.getTimeInMillis();
+                Intent intent = new Intent(Intent.ACTION_INSERT);
+                intent.setData(CalendarContract.Events.CONTENT_URI);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startMillis);
+                intent.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, endMillis);
+                intent.putExtra(CalendarContract.Events.TITLE, "Tutoring Session");
+                intent.putExtra(CalendarContract.Events.DESCRIPTION, "Course: " + session.getCourses());
+                intent.putExtra(CalendarContract.Events.EVENT_LOCATION, "uOttawa Help Centre");
+                intent.putExtra(CalendarContract.Events.AVAILABILITY, CalendarContract.Events.AVAILABILITY_BUSY);
+
+                            startActivity(intent);
+
+
+                        })
                         .show();
             }
 
