@@ -1,6 +1,6 @@
 package com.example.otams_project;
 
-public class Sessions {
+public class Session {
 
     private String tutorEmail;
     private String studentEmail;
@@ -8,19 +8,24 @@ public class Sessions {
     private String startTime;
     private String endTime;
     private String status;
+    private String courses;
 
     private String sessionID;
 
+    private boolean tutorRated;
 
-    public Sessions(){}
 
-    public Sessions(String tutorEmail, String studentEmail, String date, String startTime, String endTime, String status){
+    public Session(){}
+
+    public Session(String tutorEmail, String studentEmail, String date, String startTime, String endTime, String status, String courses){
         this.tutorEmail = tutorEmail;
         this.studentEmail = studentEmail;
         this.date = date;
         this.startTime = startTime;
         this.endTime = endTime;
         this.status = status;
+        this.courses = courses;
+        this.tutorRated = false;
     }
 
     public String getTutorEmail() {
@@ -49,6 +54,9 @@ public class Sessions {
     public String getSessionID() {
         return sessionID;
     }
+    public String getCourses() {return courses;}
+    public boolean isTutorRated() {return tutorRated;}
+    public void rateTutor() {tutorRated = true;}
 
     public void setSessionID(String sessionID) {
         this.sessionID = sessionID;

@@ -1,9 +1,9 @@
 package com.example.otams_project;
 //Backend code for admin activity
-public class AdminActions {
+public class AdminAction {
     private final FirebaseAccessor accessor;
 
-    public AdminActions() {
+    public AdminAction() {
         accessor = FirebaseAccessor.getInstance();
     }
 

@@ -1,26 +1,23 @@
 package com.example.otams_project;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
-public class StudentAction implements StudentSessionCallback {
-    private List<Sessions> pastSessions;
-    private List<Sessions> upcomingSessions;
+
+public class StudentAction {
     private final FirebaseAccessor accessor;
-    private StudentSessionCallback storedCallback;
 
     public StudentAction(){
         accessor=FirebaseAccessor.getInstance();
     }
-    public void loadAvailableSlots(String tutorEmail, AvailabilitySlotsCallback callback){
-        accessor.getTutorSlots(tutorEmail, new AvailabilitySlotsCallback() {
+    public void loadAvailableSlots(AvailabilitySlotsCallback callback){
+        accessor.getUnbookedSlots(new AvailabilitySlotsCallback() {
             @Override
-            public void onAvailabilitySlotsFetched(List<AvailabilitySlots> availabilitySlots) {
-                List<AvailabilitySlots> available = new ArrayList<>();
-                for (AvailabilitySlots s : availabilitySlots){
+            public void onAvailabilitySlotsFetched(List<AvailabilitySlot> availabilitySlots) {
+                List<AvailabilitySlot> available = new ArrayList<>();
+                for (AvailabilitySlot s : availabilitySlots){
                     if(!s.isBooked())
                         available.add(s);
                 }
@@ -34,33 +31,59 @@ public class StudentAction implements StudentSessionCallback {
             }
 
         });}
-        public void bookSlot(Context context, AvailabilitySlots slot ,String studentEmail){
-            String status;
-            if(slot.isRequiresApproval()){
-                status="pending";}
-            else{
-                status="approved";}
-            Sessions session= new Sessions(slot.getTutorEmail(), studentEmail, slot.getDate(), slot.getStartTime(), slot.getEndTime(),status);
-
-            accessor.createSession(session);
-            slot.setBooked(true);
-            accessor.bookSlot(slot.getSlotID());
-
-        }
-        public void getStudentSessions(String studentEmail, StudentSessionCallback callback){
-        this.storedCallback=callback;
-        accessor.getStudentSessions(studentEmail,this);
 
 
-        }
+    public void bookSlot(Context context, AvailabilitySlot slot , String studentEmail){
+        accessor.getStudentSessions(studentEmail, new StudentSessionCallback() {
+            @Override
+            public void onSessionsFetched(List<Session> sessions) {
+                List<Session> upcomingSessions;
+                upcomingSessions = filterUpcomingSessions(sessions);
+
+                for (Session s : upcomingSessions) {
+                    if (TimeStringComparer.timeOverlap(s.getDate(), slot.getDate(), s.getStartTime(), s.getEndTime(), slot.getStartTime(), slot.getEndTime())) {
+                        Toast.makeText(context, "Can't book overlapping slots", Toast.LENGTH_SHORT).show();
+                        Log.d("bookSlot", "Found overlap with " + slot.getSlotID());
+                        return;
+                    }
+                }
+
+                String status;
+
+                if(slot.isRequiresApproval()){
+                    status="pending";}
+                else{
+                    status="approved";}
+                Session session= new Session(slot.getTutorEmail(), studentEmail, slot.getDate(), slot.getStartTime(), slot.getEndTime(),status, slot.getCourses());
+
+                accessor.createSession(session);
+                slot.setBooked(true);
+                Toast.makeText(context, "Slot booked", Toast.LENGTH_SHORT).show();
+                accessor.bookSlot(slot.getSlotID());
+                Log.d("bookSlot", "No overlap");
+            }
+
+            @Override
+            public void onError(String message) {
+                Log.d("bookSlot","Error checking if new book time overlaps with other book times");
+            }
+        });
 
 
+
+    }
+
+    public void cancelSession(String sessionID){
+        accessor.updateSessionStatus(sessionID, "cancelled");
+    }
+
+/*
     @Override
-    public void onSessionsFetched(List<Sessions> sessions) {
+    public void onSessionsFetched(List<Session> sessions) {
         String today= getDate();
          pastSessions= new ArrayList<>();
          upcomingSessions= new ArrayList<>();
-        for(Sessions s: sessions){
+        for(Session s: sessions){
             if(s.getDate().compareTo(today)>=0)
                 upcomingSessions.add(s);
             else
@@ -79,13 +102,51 @@ public class StudentAction implements StudentSessionCallback {
 
     }
 
+ */
 
+    public void loadMySessions(String studentEmail, boolean future, SessionsCallback callback) {
+        accessor.getStudentSessions(studentEmail, new StudentSessionCallback() {
+            @Override
+            public void onSessionsFetched(List<Session> sessions) {
+                List<Session> upcomingSessions;
+                if (future) {
+                    upcomingSessions = filterUpcomingSessions(sessions);
+                } else {
+                    upcomingSessions = filterPastSessions(sessions);
+                }
 
+                callback.onSessionsFetched(upcomingSessions);
+            }
 
-    private String getDate(){
-        Calendar calendar = Calendar.getInstance();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String date = dateFormat.format(calendar.getTime());
-        return date;
+            @Override
+            public void onError(String message) {
+                callback.onError(message);
+            }
+        });
+    }
+
+    public void getTutorInfo(String tutorEmail, AccountCallback callback) {
+        accessor.getAccountByEmail(tutorEmail, callback);
+    }
+    private List<Session> filterUpcomingSessions(List<Session> sessions) {
+        List<Session> upcomingSessions = new ArrayList<>();
+        for (Session session : sessions) {
+            if (TimeStringComparer.isNumHoursAhead(session.getDate(), session.getStartTime(), 0)) {
+                upcomingSessions.add(session);
+            }
+        }
+        return upcomingSessions;
+
+    }
+
+    private List<Session> filterPastSessions(List<Session> sessions) {
+        List<Session> pastSessions = new ArrayList<>();
+        for (Session session : sessions) {
+            if (!TimeStringComparer.isNumHoursAhead(session.getDate(), session.getStartTime(), 0)) {
+                pastSessions.add(session);
+            }
+        }
+        return pastSessions;
+
     }
 }

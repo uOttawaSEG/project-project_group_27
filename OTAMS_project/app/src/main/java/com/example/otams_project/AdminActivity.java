@@ -15,7 +15,7 @@ public class AdminActivity extends AppCompatActivity {
 
     private Account adminAccount;
     private ListView accountListView;
-    private AdminActions adminActions;
+    private AdminAction adminActions;
     private List<Account> accounts;
     private String currentView = "pending";
 
@@ -26,7 +26,7 @@ public class AdminActivity extends AppCompatActivity {
 
         accountListView = findViewById(R.id.accountListView);
         adminAccount = LocalDataStorage.getAccount();
-        adminActions = new AdminActions();
+        adminActions = new AdminAction();
 
         loadPendingAccounts();
     }

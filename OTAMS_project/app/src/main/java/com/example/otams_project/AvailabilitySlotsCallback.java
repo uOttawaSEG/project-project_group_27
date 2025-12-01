@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface AvailabilitySlotsCallback {
 
-    public void onAvailabilitySlotsFetched(List<AvailabilitySlots> availabilitySlots);
+    void onAvailabilitySlotsFetched(List<AvailabilitySlot> availabilitySlots);
 
-    public void onError(String message);
+    void onError(String message);
 }

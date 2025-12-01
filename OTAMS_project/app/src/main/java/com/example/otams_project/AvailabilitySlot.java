@@ -1,6 +1,6 @@
 package com.example.otams_project;
 
-public class AvailabilitySlots {
+public class AvailabilitySlot {
     private String startTime;
     private String endTime;
 
@@ -8,6 +8,7 @@ public class AvailabilitySlots {
 
     private String date;
 
+    private String courses;
 
     private boolean requiresApproval;
 
@@ -15,15 +16,15 @@ public class AvailabilitySlots {
 
     private boolean booked;
 
-    public AvailabilitySlots(){}
-    public AvailabilitySlots(String startTime, String endTime, String tutorEmail, String date, boolean requiresApproval, boolean booked) {
+    public AvailabilitySlot(){}
+    public AvailabilitySlot(String startTime, String endTime, String tutorEmail, String date, boolean requiresApproval, boolean booked, String courses) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.requiresApproval = requiresApproval;
         this.tutorEmail = tutorEmail;
         this.date = date;
         this.booked = booked;
-
+        this.courses = courses;
 
     }
     public String getStartTime() {
@@ -42,7 +43,9 @@ public class AvailabilitySlots {
         return date;
     }
 
-
+    public String getCourses() {
+        return courses;
+    }
 
     public boolean isRequiresApproval() {
         return requiresApproval;

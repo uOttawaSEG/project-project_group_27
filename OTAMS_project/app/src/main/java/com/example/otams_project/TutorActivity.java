@@ -3,7 +3,6 @@ package com.example.otams_project;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -17,12 +16,14 @@ public class TutorActivity extends AppCompatActivity {
 
     private ListView accountListView;
 
-    private TutorActions tutorActions;
+    private TutorAction tutorActions;
     private String tutorEmail;
+
+    private String courses;
     private String currentView = "upcoming";
 
-    private List<Sessions> currentSessions = new ArrayList<>();
-    private List<AvailabilitySlots> currentSlots = new ArrayList<>();
+    private List<Session> currentSessions = new ArrayList<>();
+    private List<AvailabilitySlot> currentSlots = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,8 @@ public class TutorActivity extends AppCompatActivity {
         accountListView = findViewById(R.id.accountListView);
         Account account = LocalDataStorage.getAccount();
         tutorEmail = account.getEmail();
-        tutorActions = new TutorActions();
+        courses = ((Tutor)account.getUser()).getCourses();
+        tutorActions = new TutorAction();
         showUpcoming();
     }
 
@@ -65,7 +67,7 @@ public class TutorActivity extends AppCompatActivity {
 
         tutorActions.loadUpcomingSessions(tutorEmail, new SessionsCallback() {
             @Override
-            public void onSessionsFetched(List<Sessions> sessions) {
+            public void onSessionsFetched(List<Session> sessions) {
                 currentSessions = sessions;
                 updateSessionListView();
             }
@@ -83,7 +85,7 @@ public class TutorActivity extends AppCompatActivity {
 
         tutorActions.loadPastSessions(tutorEmail, new SessionsCallback() {
             @Override
-            public void onSessionsFetched(List<Sessions> sessions) {
+            public void onSessionsFetched(List<Session> sessions) {
                 currentSessions = sessions;
                 updateSessionListView();
             }
@@ -101,7 +103,7 @@ public class TutorActivity extends AppCompatActivity {
 
         tutorActions.loadPendingSessions(tutorEmail, new SessionsCallback() {
             @Override
-            public void onSessionsFetched(List<Sessions> sessions) {
+            public void onSessionsFetched(List<Session> sessions) {
                 currentSessions = sessions;
                 updateSessionListView();
             }
@@ -119,7 +121,7 @@ public class TutorActivity extends AppCompatActivity {
 
         tutorActions.loadTutorSlots(tutorEmail, new AvailabilitySlotsCallback() {
             @Override
-            public void onAvailabilitySlotsFetched(List<AvailabilitySlots> slots) {
+            public void onAvailabilitySlotsFetched(List<AvailabilitySlot> slots) {
                 currentSlots = slots;
                 updateSlotListView();
             }
@@ -141,7 +143,7 @@ public class TutorActivity extends AppCompatActivity {
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        for (Sessions session : currentSessions) {
+        for (Session session : currentSessions) {
             String displayText = session.getDate() + " " +
                     session.getStartTime() + "-" + session.getEndTime() +
                     " - " + session.getStudentEmail() +
@@ -151,7 +153,7 @@ public class TutorActivity extends AppCompatActivity {
         accountListView.setAdapter(adapter);
 
         accountListView.setOnItemClickListener((parent, view, position, id) -> {
-            Sessions selectedSession = currentSessions.get(position);
+            Session selectedSession = currentSessions.get(position);
             showSessionDialog(selectedSession);
         });
     }
@@ -164,7 +166,7 @@ public class TutorActivity extends AppCompatActivity {
         }
 
         ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1);
-        for (AvailabilitySlots slot : currentSlots) {
+        for (AvailabilitySlot slot : currentSlots) {
             String displayText = slot.getDate() + " " +
                     slot.getStartTime() + "-" + slot.getEndTime() +
                     " (Approval: " + (slot.isRequiresApproval() ? "Yes" : "No") + ")";
@@ -173,7 +175,7 @@ public class TutorActivity extends AppCompatActivity {
         accountListView.setAdapter(adapter);
 
         accountListView.setOnItemClickListener((parent, view, position, id) -> {
-            AvailabilitySlots selectedSlot = currentSlots.get(position);
+            AvailabilitySlot selectedSlot = currentSlots.get(position);
             showSlotDialog(selectedSlot);
         });
     }
@@ -238,8 +240,7 @@ public class TutorActivity extends AppCompatActivity {
                 showToast("End time must be after start time");
                 return;
             }
-            tutorActions.createAvailabilitySlot(this, tutorEmail, date, start, end, requiresApproval, booked);
-            showToast("Slot created!");
+            tutorActions.createAvailabilitySlot(this, tutorEmail, date, start, end, requiresApproval, booked, courses);
             showAvailability();
             dialog.dismiss();
         });
@@ -248,7 +249,7 @@ public class TutorActivity extends AppCompatActivity {
     }
 
 
-    private void showSessionDialog(Sessions session) {
+    private void showSessionDialog(Session session) {
         tutorActions.getStudentInfo(session.getStudentEmail(), new AccountCallback() {
             @Override
             public void onAccountFetched(Account account) {
@@ -286,7 +287,7 @@ public class TutorActivity extends AppCompatActivity {
         });
     }
 
-    private void showSlotDialog(AvailabilitySlots slot) {
+    private void showSlotDialog(AvailabilitySlot slot) {
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Availability Slot")
                 .setMessage("Date: " + slot.getDate() + "\n" +

@@ -24,9 +24,11 @@ public class LoggedInActivity extends AppCompatActivity {
 
         Button adminControlsButton = findViewById(R.id.adminButton);
         Button tutorButton = findViewById(R.id.tutorButton);
+        Button studentButton = findViewById(R.id.studentButton);
 
         adminControlsButton.setVisibility(View.INVISIBLE);
         tutorButton.setVisibility(View.INVISIBLE);
+        studentButton.setVisibility(View.INVISIBLE);
 
         account = LocalDataStorage.getAccount();
         Account newAccount = (Account) getIntent().getSerializableExtra("NewAccount");
@@ -48,58 +50,60 @@ public class LoggedInActivity extends AppCompatActivity {
 
         if (account != null) {
 
-            if (account.getRole() != null) {
-                roleToDisplay = account.getRole();
-            }
+            if (account.getUser() != null) {
 
-            if (account.getStatus() == null) {
-
-
-                welcomeMessage = "You have a legacy " + roleToDisplay + " account, contact 123-456-7890 for help";
-                toastMessage = "Our apologies " + account.getUser().getFirstName();
-
-
-            } else {
-
-
-                switch (account.getStatus()) {
-                    case "approved":
-                        welcomeMessage = "Welcome! Successfully Logged in as " + roleToDisplay;
-                        toastMessage = account.getEmail() + " has signed in, they are a(n) " + account.getRole();
-
-                        switch (roleToDisplay) {
-                            case "admin":
-                                adminControlsButton.setVisibility(View.VISIBLE);
-                                break;
-                            case "tutor":
-                                tutorButton.setVisibility(View.VISIBLE);
-                                break;
-                            case "student":
-                                //TO ADD student button
-                                break;
-                            default:
-                                //Unexpected role
-                                Log.d("LoggedInRole","Unexpected role in logged in account");
-                                break;
-                        }
-
-                        break;
-                    case "pending":
-                        welcomeMessage = "Your registration for the " + roleToDisplay + " role is pending approval";
-                        toastMessage = "Hang in there " + account.getUser().getFirstName() + "!";
-                        break;
-                    case "rejected":
-                        welcomeMessage = "Your registration for the " + roleToDisplay + " role has been rejected, please contact 123-456-7890 for help";
-                        toastMessage = account.getEmail() + " has attempted to sign in, they are a(n) " + account.getRole();
-                        break;
-                    default:
-                        welcomeMessage = "Registration status is an unexpected value";
-                        break;
+                if (account.getRole() != null) {
+                    roleToDisplay = account.getRole();
                 }
 
+                if (account.getStatus() == null) {
 
+
+                    welcomeMessage = "You have a legacy " + roleToDisplay + " account, contact 123-456-7890 for help";
+                    toastMessage = "Our apologies " + account.getUser().getFirstName();
+
+
+                } else {
+
+
+                    switch (account.getStatus()) {
+                        case "approved":
+                            welcomeMessage = "Welcome! Successfully Logged in as " + roleToDisplay;
+                            toastMessage = account.getEmail() + " has signed in, they are a(n) " + account.getRole();
+
+                            switch (roleToDisplay) {
+                                case "admin":
+                                    adminControlsButton.setVisibility(View.VISIBLE);
+                                    break;
+                                case "tutor":
+                                    tutorButton.setVisibility(View.VISIBLE);
+                                    break;
+                                case "student":
+                                    studentButton.setVisibility(View.VISIBLE);
+                                    break;
+                                default:
+                                    //Unexpected role
+                                    Log.d("LoggedInRole", "Unexpected role in logged in account");
+                                    break;
+                            }
+
+                            break;
+                        case "pending":
+                            welcomeMessage = "Your registration for the " + roleToDisplay + " role is pending approval";
+                            toastMessage = "Hang in there " + account.getUser().getFirstName() + "!";
+                            break;
+                        case "rejected":
+                            welcomeMessage = "Your registration for the " + roleToDisplay + " role has been rejected, please contact 123-456-7890 for help";
+                            toastMessage = account.getEmail() + " has attempted to sign in, they are a(n) " + account.getRole();
+                            break;
+                        default:
+                            welcomeMessage = "Registration status is an unexpected value";
+                            break;
+                    }
+
+
+                }
             }
-
         }
 
         TextView welcomeText=findViewById(R.id.textView3);
@@ -128,6 +132,12 @@ public class LoggedInActivity extends AppCompatActivity {
     public void onTutorButtonClick(View view) {
         if (account.getRole().equals("tutor")) {
             startActivity(new Intent(LoggedInActivity.this, TutorActivity.class));
+        }
+    }
+
+    public void onStudentButtonClick(View view) {
+        if (account.getRole().equals("student")) {
+            startActivity(new Intent(LoggedInActivity.this, StudentActivity.class));
         }
     }
 

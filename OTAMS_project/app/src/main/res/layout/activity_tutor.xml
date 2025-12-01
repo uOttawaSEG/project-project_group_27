@@ -23,7 +23,7 @@
     <!-- Top Row: Back, Availability, New -->
     <Button
         android:backgroundTint="@android:color/holo_green_dark"
-        android:id="@+id/backButton"
+        android:id="@+id/studentBackButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Back"
@@ -41,8 +41,8 @@
         android:layout_marginStart="40dp"
         android:onClick="onAvailabilityClick"
         android:text="Availability"
-        app:layout_constraintStart_toEndOf="@id/backButton"
-        app:layout_constraintTop_toTopOf="@id/backButton" />
+        app:layout_constraintStart_toEndOf="@id/studentBackButton"
+        app:layout_constraintTop_toTopOf="@id/studentBackButton" />
 
     <Button
         android:backgroundTint="@android:color/holo_green_dark"
@@ -53,7 +53,7 @@
         android:onClick="onNewClick"
         android:text="New"
         app:layout_constraintStart_toEndOf="@id/availabilityButton"
-        app:layout_constraintTop_toTopOf="@id/backButton" />
+        app:layout_constraintTop_toTopOf="@id/studentBackButton" />
 
     <Button
         android:backgroundTint="@android:color/holo_green_dark"
@@ -62,7 +62,7 @@
         android:layout_height="wrap_content"
         android:text="Past"
         android:onClick="onPastClick"
-        app:layout_constraintTop_toBottomOf="@id/backButton"
+        app:layout_constraintTop_toBottomOf="@id/studentBackButton"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_marginTop="20dp" />
 

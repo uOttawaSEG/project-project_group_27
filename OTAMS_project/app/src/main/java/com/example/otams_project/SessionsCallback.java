@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface SessionsCallback {
 
-    public void onSessionsFetched(List<Sessions> sessions);
+    void onSessionsFetched(List<Session> sessions);
 
-    public void onError(String message);
+    void onError(String message);
 }

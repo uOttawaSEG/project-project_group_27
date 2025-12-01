@@ -274,13 +274,13 @@ public class FirebaseAccessor {
     }
 
 
-    public void createAvailabilitySlot(AvailabilitySlots slot) {
+    public void createAvailabilitySlot(AvailabilitySlot slot) {
         DatabaseReference newKey = database.child("availability_slots").push();
         slot.setSlotID(newKey.getKey());
         newKey.setValue(slot);
     }
 
-    public void createSession(Sessions session) {
+    public void createSession(Session session) {
         DatabaseReference newKey = database.child("sessions").push();
         session.setSessionID(newKey.getKey());
         newKey.setValue(session);
@@ -306,9 +306,31 @@ public class FirebaseAccessor {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<AvailabilitySlots> slots = new ArrayList<>();
+                List<AvailabilitySlot> slots = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    AvailabilitySlots slot = child.getValue(AvailabilitySlots.class);
+                    AvailabilitySlot slot = child.getValue(AvailabilitySlot.class);
+                    if (slot != null) {
+                        slots.add(slot);
+                    }
+                }
+                callback.onAvailabilitySlotsFetched(slots);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.onError(error.getMessage());
+            }
+        });
+    }
+
+    public void getUnbookedSlots(AvailabilitySlotsCallback callback) {
+        Query query = database.child("availability_slots").orderByChild("booked").equalTo(false);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                List<AvailabilitySlot> slots = new ArrayList<>();
+                for (DataSnapshot child : snapshot.getChildren()) {
+                    AvailabilitySlot slot = child.getValue(AvailabilitySlot.class);
                     if (slot != null) {
                         slots.add(slot);
                     }
@@ -328,9 +350,9 @@ public class FirebaseAccessor {
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Sessions> sessions = new ArrayList<>();
+                List<Session> sessions = new ArrayList<>();
                 for (DataSnapshot child : snapshot.getChildren()) {
-                    Sessions session = child.getValue(Sessions.class);
+                    Session session = child.getValue(Session.class);
                     if (session != null) {
                         session.setSessionID(child.getKey());
                         sessions.add(session);
@@ -370,14 +392,14 @@ public class FirebaseAccessor {
             }
         });
     }
-    public void getStudentSessions(String studentEmail,StudentSessionCallback callback){
+    public void getStudentSessions(String studentEmail, StudentSessionCallback callback){
         Query query= database.child("sessions").orderByChild("studentEmail").equalTo(studentEmail);
         query.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                List<Sessions> sessions= new ArrayList<>();
+                List<Session> sessions= new ArrayList<>();
                 for (DataSnapshot child: snapshot.getChildren()){
-                    Sessions session= child.getValue(Sessions.class);
+                    Session session= child.getValue(Session.class);
                     if(session!=null){
                         session.setSessionID(child.getKey());
                         sessions.add(session);
@@ -391,6 +413,30 @@ public class FirebaseAccessor {
             public void onCancelled(@NonNull DatabaseError error) {
                 callback.onError(error.getMessage());
 
+            }
+        });
+
+    }
+
+    public void updateRating(float currentRating, int numRatings, String tutorEmail, RatingCallback callback, Session session) {
+        Query query = database.child("account").orderByChild("email").equalTo(tutorEmail);
+        query.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                    String role = dataSnapshot.child("role").getValue(String.class);
+                    if ("tutor".equals(role)){
+                        dataSnapshot.child("user").child("rating").getRef().setValue(currentRating);
+                        dataSnapshot.child("user").child("numRatings").getRef().setValue(numRatings);
+                    }
+                }
+                database.child("sessions").child(session.getSessionID()).child("tutorRated").setValue(true);
+                callback.ratingChangeSuccess(session);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                callback.ratingChangeFail();
             }
         });
 

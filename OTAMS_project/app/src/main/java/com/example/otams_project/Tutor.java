@@ -6,6 +6,9 @@ public class Tutor extends User {
     String degree;
     String courses;
 
+    private Float rating;
+    private Integer numRatings;
+
     public Tutor(String firstName, String lastName, String phone) {
         super(firstName, lastName, phone);
     }
@@ -19,6 +22,20 @@ public class Tutor extends User {
 
     public  String getCourses() {
         return courses;
+    }
+
+    public Float getRating() {return rating;}
+    public Integer getNumRatings() {return numRatings;}
+
+    public void addRating(int newRating, String email, StudentActivity activity, Session session) {
+        if (numRatings == null || rating == null) {
+            numRatings = 0;
+            rating = (float)0;
+        }
+
+        this.rating = ((rating*numRatings) + newRating)/(numRatings + 1);
+        this.numRatings = numRatings + 1;
+        FirebaseAccessor.getInstance().updateRating(this.rating, this.numRatings, email, activity, session);
     }
 
     @Override
