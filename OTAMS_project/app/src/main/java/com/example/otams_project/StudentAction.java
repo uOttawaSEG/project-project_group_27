@@ -41,10 +41,12 @@ public class StudentAction {
                 upcomingSessions = filterUpcomingSessions(sessions);
 
                 for (Session s : upcomingSessions) {
-                    if (TimeStringComparer.timeOverlap(s.getDate(), slot.getDate(), s.getStartTime(), s.getEndTime(), slot.getStartTime(), slot.getEndTime())) {
-                        Toast.makeText(context, "Can't book overlapping slots", Toast.LENGTH_SHORT).show();
-                        Log.d("bookSlot", "Found overlap with " + slot.getSlotID());
-                        return;
+                    if ("approved".equals(s.getStatus()) || "pending".equals(s.getStatus())) {
+                        if (TimeStringComparer.timeOverlap(s.getDate(), slot.getDate(), s.getStartTime(), s.getEndTime(), slot.getStartTime(), slot.getEndTime())) {
+                            Toast.makeText(context, "Can't book overlapping slots", Toast.LENGTH_SHORT).show();
+                            Log.d("bookSlot", "Found overlap with " + slot.getSlotID());
+                            return;
+                        }
                     }
                 }
 
@@ -55,6 +57,7 @@ public class StudentAction {
                 else{
                     status="approved";}
                 Session session= new Session(slot.getTutorEmail(), studentEmail, slot.getDate(), slot.getStartTime(), slot.getEndTime(),status, slot.getCourses());
+                session.setSlotID(slot.getSlotID());
 
                 accessor.createSession(session);
                 slot.setBooked(true);
@@ -73,8 +76,8 @@ public class StudentAction {
 
     }
 
-    public void cancelSession(String sessionID){
-        accessor.updateSessionStatus(sessionID, "cancelled");
+    public void cancelSession(String sessionID, String slotID){
+        accessor.updateSessionStatus(sessionID, slotID,"cancelled");
     }
 
 /*
