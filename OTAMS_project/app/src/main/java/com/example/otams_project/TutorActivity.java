@@ -204,9 +204,13 @@ public class TutorActivity extends AppCompatActivity {
         requiresApprovalBox.setText("Requires tutor request approval");
         layout.addView(requiresApprovalBox);
 
+        /*
+        Deliverable 3 testing code
+
         final android.widget.CheckBox bookedBox = new android.widget.CheckBox(this);
         bookedBox.setText("Mark as already booked");
         layout.addView(bookedBox);
+         */
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -222,7 +226,8 @@ public class TutorActivity extends AppCompatActivity {
             String start = startTimeInput.getText().toString().trim();
             String end = endTimeInput.getText().toString().trim();
             boolean requiresApproval = requiresApprovalBox.isChecked();
-            boolean booked = bookedBox.isChecked();
+            //boolean booked = bookedBox.isChecked();
+            boolean booked = false;
 
             if (date.isEmpty() || start.isEmpty() || end.isEmpty()) {
                 showToast("Please fill in all fields");
@@ -254,7 +259,7 @@ public class TutorActivity extends AppCompatActivity {
             @Override
             public void onAccountFetched(Account account) {
                 Student student = (Student) account.getUser();
-                new androidx.appcompat.app.AlertDialog.Builder(TutorActivity.this)
+                AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(TutorActivity.this)
 
                         .setTitle("Session Details")
                         .setMessage("Date: " + session.getDate() + "\n" +
@@ -262,19 +267,22 @@ public class TutorActivity extends AppCompatActivity {
                                 "Student: " + student.getFirstName() + " " + student.getLastName() + "\n" +
                                 "Email: " + session.getStudentEmail() + "\n" +
                                 "Phone: " + student.getPhone() + "\n" +
-                                "Status: " + session.getStatus())
-                        .setPositiveButton("Approve", (dialog, which) -> {
-                            tutorActions.approveSession(session.getSessionID());
+                                "Status: " + session.getStatus());
+
+                if ("pending".equals(session.getStatus())) {
+                        builder.setPositiveButton("Approve", (dialog, which) -> {
+                            tutorActions.approveSession(session.getSessionID(), session.getSlotID());
                             showToast("Session approved");
                             refreshCurrentView();
                         })
-                        .setNegativeButton("Reject", (dialog, which) -> {
-                            tutorActions.rejectSession(session.getSessionID());
-                            showToast("Session rejected");
-                            refreshCurrentView();
-                        })
-                        .setNeutralButton("Cancel Session", (dialog, which) -> {
-                            tutorActions.cancelSession(session.getSessionID());
+                                .setNegativeButton("Reject", (dialog, which) -> {
+                                tutorActions.rejectSession(session.getSessionID(), session.getSlotID());
+                                showToast("Session rejected");
+                                refreshCurrentView();
+                            });
+                }
+                        builder.setNeutralButton("Cancel Session", (dialog, which) -> {
+                            tutorActions.cancelSession(session.getSessionID(), session.getSlotID());
                             showToast("Session cancelled");
                             refreshCurrentView();
                         })
@@ -294,7 +302,7 @@ public class TutorActivity extends AppCompatActivity {
                         "Time: " + slot.getStartTime() + "-" + slot.getEndTime() + "\n" +
                         "Requires Approval: " + (slot.isRequiresApproval () ? "Yes" : "No"))
                 .setPositiveButton("Delete", (dialog, which) -> {
-                    tutorActions.deleteSlot(slot.getSlotID());
+                    tutorActions.deleteSlot(this, slot.getSlotID(), tutorEmail);
                     showToast("Slot deleted");
                     showAvailability();
                 })

@@ -222,7 +222,7 @@ public class StudentActivity extends AppCompatActivity implements RatingCallback
                     builder.setPositiveButton("Cancel", (dialog, which) -> {
 
                         if (TimeStringComparer.isNumHoursAhead(session.getDate(), session.getStartTime(), 24)) {
-                            studentAction.cancelSession(session.getSessionID());
+                            studentAction.cancelSession(session.getSessionID(), session.getSlotID());
                             showToast("Session canceled");
                             refreshCurrentView();
                         } else {

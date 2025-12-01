@@ -12,6 +12,8 @@ public class Session {
 
     private String sessionID;
 
+    private String slotID;
+
     private boolean tutorRated;
 
 
@@ -57,6 +59,14 @@ public class Session {
     public String getCourses() {return courses;}
     public boolean isTutorRated() {return tutorRated;}
     public void rateTutor() {tutorRated = true;}
+
+    public String getSlotID() {
+        return slotID;
+    }
+
+    public void setSlotID(String slotID) {
+        this.slotID = slotID;
+    }
 
     public void setSessionID(String sessionID) {
         this.sessionID = sessionID;

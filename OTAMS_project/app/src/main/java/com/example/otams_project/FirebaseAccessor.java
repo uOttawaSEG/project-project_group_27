@@ -296,7 +296,8 @@ public class FirebaseAccessor {
         database.child("availability_slots").child(slotID).removeValue();
     }
 
-    public void updateSessionStatus(String sessionID, String status) {
+    public void updateSessionStatus(String sessionID, String slotID, String status) {
+        database.child("availability_slots").child(slotID).child("booked").setValue(false);
         database.child("sessions").child(sessionID).child("status").setValue(status);
     }
 

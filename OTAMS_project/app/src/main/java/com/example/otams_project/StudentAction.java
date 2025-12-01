@@ -55,6 +55,7 @@ public class StudentAction {
                 else{
                     status="approved";}
                 Session session= new Session(slot.getTutorEmail(), studentEmail, slot.getDate(), slot.getStartTime(), slot.getEndTime(),status, slot.getCourses());
+                session.setSlotID(slot.getSlotID());
 
                 accessor.createSession(session);
                 slot.setBooked(true);
@@ -73,8 +74,8 @@ public class StudentAction {
 
     }
 
-    public void cancelSession(String sessionID){
-        accessor.updateSessionStatus(sessionID, "cancelled");
+    public void cancelSession(String sessionID, String slotID){
+        accessor.updateSessionStatus(sessionID, slotID,"cancelled");
     }
 
 /*

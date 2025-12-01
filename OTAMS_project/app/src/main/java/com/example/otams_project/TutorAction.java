@@ -80,12 +80,16 @@ public class TutorAction {
                 AvailabilitySlot slot = new AvailabilitySlot(startTime, endTime, tutorEmail, date, requiresApproval, booked, courses);
                 accessor.createAvailabilitySlot(slot);
 
+                /*
+                Will never be true in deliverable 4
 
                 if (booked) {
                     String status = requiresApproval ? "pending" : "approved";
                     Session session = new Session(tutorEmail, "exstudent@gmail.com", date, startTime, endTime, status, courses);
                     accessor.createSession(session);
                 }
+
+                 */
 
                 Toast.makeText(context, "Slot created.", Toast.LENGTH_SHORT).show();
             }
@@ -99,14 +103,14 @@ public class TutorAction {
     }
 
 
-    public void approveSession(String sessionID){
-        accessor.updateSessionStatus(sessionID, "approved");
+    public void approveSession(String sessionID, String slotID){
+        accessor.updateSessionStatus(sessionID, slotID, "approved");
     }
-    public void rejectSession(String sessionID){
-        accessor.updateSessionStatus(sessionID, "rejected");
+    public void rejectSession(String sessionID, String slotID){
+        accessor.updateSessionStatus(sessionID, slotID, "rejected");
     }
-    public void cancelSession(String sessionID){
-        accessor.updateSessionStatus(sessionID, "cancelled");
+    public void cancelSession(String sessionID, String slotID){
+        accessor.updateSessionStatus(sessionID, slotID, "cancelled");
     }
 
 
