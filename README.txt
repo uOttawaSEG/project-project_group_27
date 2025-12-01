@@ -1,103 +1,138 @@
 # OTAMS – Online Tutoring Appointment Management System  
-**SEG2105 – Introduction to Software Engineering (Fall 2025)**  
-University of Ottawa  
-
----
+SEG2105 – Introduction to Software Engineering (Fall 2025)  
+Group 27
 
 ## Team Members
 - Mohamad Zalzale  
 - Trevor Choi  
 - Carter Charlebois  
 - Lucas Busoi  
-**Group 27**
-
----
 
 ## Administrator Credentials
-```
-Email: admin.root@gmail.com
+Email: admin.root@gmail.com  
 Password: admin123@
-```
 
 ---
 
-## Project Description
-OTAMS (Online Tutoring Appointment Management System) is an Android application that helps the University of Ottawa Help Centre manage tutoring appointments.  
-It supports three user roles: **Student**, **Tutor**, and **Administrator**.
+# Deliverable 4 – Student Features & Full Integration
 
-### Deliverable 3 Adds
-This deliverable focuses on **Tutor features**.  
-Tutors can now:
-- **Create availability slots** by selecting a date, start time, and end time.  
-- Choose whether session requests require manual approval or are automatically approved.  
-- View **upcoming**, **past**, and **pending** sessions.  
-- View student information for each session.  
-- **Approve, reject, or cancel** session requests.  
-- **Delete** availability slots they have created.  
-- (Validation coming) Only create slots in 30-minute increments, on future dates, and without overlaps.  
+Deliverable 4 completes the OTAMS application by implementing the full **Student workflow**, finalizing end-to-end integration between all three roles, and adding the required unit tests.
 
----
-
-## How to Use the App
-1. **Install the APK:** `Project_Group_27_debug.apk`  
-2. **Register** as a Student or Tutor.  
-   - Newly registered accounts require administrator approval.  
-3. **Administrator:** log in using the credentials above to approve or reject requests.  
-4. **Tutor Login:** once approved, tutors can:
-   - View upcoming, past, and pending sessions.  
-   - Create or delete availability slots.  
-   - Approve / reject student session requests.  
-5. **Student Login (future deliverable):** students will be able to book sessions based on available slots.
+This deliverable includes:
+- Student session searching and booking  
+- Viewing upcoming and past sessions  
+- Seeing approval/pending/rejected status  
+- Session cancellation rules (24-hour restriction)  
+- Tutor rating system  
+- Search by course code with tutor name + rating  
+- Prevention of overlapping bookings  
+- Prevention of deleting booked tutor slots  
+- At least four local unit tests  
+- Final integration and UI linking all features together  
 
 ---
 
-## Files Included in Release
-- **APK:** `Project_Group_27_debug.apk`  
-- **UML Diagram:** `Deliverable 3 Class Diagram.pdf`  
-- **Demo Video:** `Deliverable 3 Demo.mp4`  
-- **Updated README:** `README_D3.md`
+# How to Use the App
+
+## 1. Installation
+Install the APK from the release:  
+`Project_Group_27_debug.apk`
+
+## 2. Registration
+Users may register as:
+- Student  
+- Tutor  
+
+Registrations must be approved by the Administrator.
+
+## 3. Administrator Workflow
+Log in using the credentials above to:
+- View pending registration requests  
+- Approve or reject them  
+- Re-approve previously rejected requests  
+
+## 4. Tutor Workflow
+Once approved, Tutors can:
+- Create availability slots (30-minute increments only)  
+- Enable or disable auto-approval  
+- View upcoming, pending, and past sessions  
+- View student information  
+- Approve, reject, or cancel sessions  
+- Delete availability slots **only if not booked** (as required in D4)
+
+## 5. Student Workflow (Deliverable 4)
+Students can now:
+- View **upcoming sessions** (sorted by date)
+- View **past sessions**
+- See status: **approved, pending, rejected**
+- Cancel:
+  - pending sessions at any time  
+  - approved sessions only if more than 24 hours remain
+- Search for available sessions by **course code**
+- See tutor **name** and **average rating**
+- Book a session (slot disappears from results)
+- Cannot book overlapping sessions
+- Rate Tutors (1–5 stars) after completed sessions
 
 ---
 
-## Technical Details
+# Technical Details
+
 | Item | Description |
-|------|--------------|
+|------|-------------|
 | Language | Java |
 | IDE | Android Studio |
 | Database | Firebase Realtime Database |
-| Minimum SDK | 24 (Android 7.0 Nougat) |
-| Key Classes | Account, AvailabilitySlots, Sessions, TutorActions, FirebaseAccessor, TutorActivity |
-| Key Interfaces | AvailabilitySlotsCallback, SessionsCallback |
+| Minimum SDK | 24 |
+| Key Classes | StudentAction, TutorActions, FirebaseAccessor, Sessions, AvailabilitySlots |
+| Key Interfaces | StudentSessionCallback, SessionsCallback, AvailabilitySlotsCallback |
 
 ---
 
-## What’s New in Deliverable 3
-- Added **TutorActivity** screen with all core tutor functions.  
-- Implemented **TutorActions** backend class connecting to Firebase.  
-- Added **AvailabilitySlots** and **Sessions** classes to store tutor availability and bookings.  
-- Integrated **FirebaseAccessor** for creating, reading, and deleting slots / sessions.  
-- Improved navigation between different tutor views (upcoming, pending, past, availability).  
-- Added dialog pop-ups for viewing details and taking actions (approve, reject, cancel, delete).  
-- UI refinements for tutor controls and lists.  
+# New Additions in Deliverable 4
+
+### StudentAction Class (NEW)
+- Fetches all student sessions  
+- Splits them into **past** and **upcoming**  
+- Books slots and writes sessions to Firebase  
+- Prevents double/overlapping bookings  
+- Designed to integrate directly with StudentActivity XML  
+
+### StudentActivity (NEW)
+- UI for seeing upcoming and past sessions  
+- Buttons to cancel sessions  
+- Displays session status clearly  
+- Search bar for course codes  
+- Displays tutor name + average rating  
+- Rating dialog after completed sessions  
+
+### FirebaseAccessor (Expanded)
+- Added `getStudentSessions()`  
+- Integrated with StudentSessionCallback  
+- Added logic preventing tutors from deleting booked slots  
+
+### Unit Tests (NEW)
+At least four local unit tests were implemented covering:
+- Date comparison and sorting logic  
+- Slot-overlap detection  
+- Session cancellation rules  
+- Rating functionality  
 
 ---
 
-## Submission Information
-- **Release Tag:** `v0.3`  
-- **Release Title:** Deliverable 3  
-- All required files uploaded to GitHub Release.  
+# Files Included in Release
+- APK: `Project_Group_27_debug.apk`
+- UML Diagram: `Deliverable 4 UML.pdf`
+- Final Report: `Deliverable 4 Report.pdf`
+- README: `README_D4.md`
+- Demo Video: `Deliverable 4 Demo.mp4`
+- Local Unit Tests: `app/src/test/...`
 
 ---
 
-## Testing Tutor Features
-1. **Login** as Tutor.  
-2. Click **“New”** → create an availability slot (future date, 30-minute increments).  
-3. Check **“Requires approval”** to enable manual session control.  
-4. View the slot under **Availability** tab.  
-5. View **Pending Sessions** → approve, reject, or cancel.  
-6. View **Past** and **Upcoming** sessions lists.  
-7. Delete a slot using the Delete option in the dialog.  
+# Submission Information
+Release Tag: `v0.4`  
+Release Title: `Deliverable 4`  
+All required files uploaded to GitHub Release.
 
 ---
-
-**Deliverable 3 Complete:** Tutor functionality implemented with Firebase integration, validation, and user interface updates.
