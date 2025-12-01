@@ -19,8 +19,36 @@ public class TutorAction {
         accessor.getTutorSlots(tutorEmail, callback);
     }
 
-    public void deleteSlot(String slotID){
-        accessor.deleteSlot(slotID);
+    public void deleteSlot(Context context,String slotID, String tutorEmail){
+        accessor.getTutorSlots(tutorEmail, new AvailabilitySlotsCallback() {
+            @Override
+            public void onAvailabilitySlotsFetched(List<AvailabilitySlot> availabilitySlots) {
+                final AvailabilitySlot[] target=new AvailabilitySlot[1];
+                for(AvailabilitySlot s : availabilitySlots){
+                    if(s.getSlotID().equals(slotID)){
+                        target[0]=s;
+                        break;}
+                }
+                if(target[0]==null){
+                    Toast.makeText(context,"Error: Slot not found!", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if(target[0].isBooked()){
+                    Toast.makeText(context,"Cannot delete slot is booked", Toast.LENGTH_SHORT).show();
+                    return;}
+                else{
+                    accessor.deleteSlot(target[0].getSlotID());
+                    Toast.makeText(context,"Slot deleted successfully", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+            }
+
+            @Override
+            public void onError(String message) {
+
+            }
+        });
     }
     public void getStudentInfo(String studentEmail, AccountCallback callback) {
         accessor.getAccountByEmail(studentEmail, callback);
