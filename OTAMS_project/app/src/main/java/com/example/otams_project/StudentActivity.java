@@ -218,7 +218,7 @@ public class StudentActivity extends AppCompatActivity implements RatingCallback
                                     Toast.makeText(StudentActivity.this, "Rating must be an integer from 1-5", Toast.LENGTH_SHORT).show();
                                 }
                             });
-                } else if (!past){
+                } else if (!past && "approved".equals(session.getStatus())){
                     builder.setPositiveButton("Cancel", (dialog, which) -> {
 
                         if (TimeStringComparer.isNumHoursAhead(session.getDate(), session.getStartTime(), 24)) {
@@ -229,6 +229,13 @@ public class StudentActivity extends AppCompatActivity implements RatingCallback
                             showToast("Session cannot be canceled within 24 hours of start");
                         }
                     });
+                } else if (!past && "pending".equals(session.getStatus())) {
+                    builder.setPositiveButton("Cancel", (dialog, which) -> {
+                        studentAction.cancelSession(session.getSessionID(), session.getSlotID());
+                        showToast("Session canceled");
+                        refreshCurrentView();
+                    });
+
                 }
 
                 builder.setNegativeButton("Back", null)
